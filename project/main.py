@@ -31,7 +31,7 @@ def test_step1():
     # lod1.print_solution(sol)
 
     sol = lod1.zwroc_liste_produktow(sol)
-    print(sol)
+    print('type_sol', type(sol))
     print('\n\n')
     sol_step = lod1.step1(sol)
     print(sol_step)
@@ -67,6 +67,15 @@ def test_check_current_solution_in_tabu_list():
     print(check)
 
 
+def test_tabu_solution():
+    terminarz1 = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
+    lista_produktow1 = ds.generuj_liste_produktow()
+    lod1 = tsol.Lodowka(terminarz1, lista_produktow1)
+    lod1.tabu_solution()
+    print(lod1.best_solution)
+    print(lod1.zwroc_najlepsze_rozwiazanie(lod1.best_solution))
+
+
 if __name__ == '__main__':
     # print(ds.return_calendar(3, 1, 2022, 15, 1, 2022))
     # test_solution_structures()
@@ -74,4 +83,5 @@ if __name__ == '__main__':
     # test_generate_initial_solution()
     # test_step1()
     # test_check_capacity()
-    test_check_current_solution_in_tabu_list()
+    # test_check_current_solution_in_tabu_list()
+    test_tabu_solution()

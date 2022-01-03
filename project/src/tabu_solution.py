@@ -175,25 +175,25 @@ class Lodowka:
             # print(kierunek_przesuniecia_wybor)
             if kierunek_przesuniecia_wybor == 1:  # gora
                 macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx - 1, x_idx] = macierz_pom_produktow2[
-                                                                                                   y_idx - 1, x_idx], \
+                                                                                                     y_idx - 1, x_idx], \
                                                                                                  macierz_pom_produktow2[
-                                                                                                   y_idx, x_idx]
+                                                                                                     y_idx, x_idx]
             elif kierunek_przesuniecia_wybor == 3:  # dol
                 macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx + 1, x_idx] = macierz_pom_produktow2[
-                                                                                                   y_idx + 1, x_idx], \
+                                                                                                     y_idx + 1, x_idx], \
                                                                                                  macierz_pom_produktow2[
-                                                                                                   y_idx, x_idx]
+                                                                                                     y_idx, x_idx]
 
             elif kierunek_przesuniecia_wybor == 2:  # prawo
                 macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx, x_idx + 1] = macierz_pom_produktow2[
-                                                                                                   y_idx, x_idx + 1], \
+                                                                                                     y_idx, x_idx + 1], \
                                                                                                  macierz_pom_produktow2[
-                                                                                                   y_idx, x_idx]
+                                                                                                     y_idx, x_idx]
             else:  # lewo
                 macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx, x_idx - 1] = macierz_pom_produktow2[
-                                                                                                   y_idx, x_idx - 1], \
+                                                                                                     y_idx, x_idx - 1], \
                                                                                                  macierz_pom_produktow2[
-                                                                                                   y_idx, x_idx]
+                                                                                                     y_idx, x_idx]
 
         # self.tabu_list.append(copy.deepcopy(macierz_pom_produktow))
 
@@ -218,61 +218,6 @@ class Lodowka:
                 ponad_stan_lst.append(False)
 
         return ponad_stan_lst
-
-    # def check_capacity(self, macierz_pom_produktow2=None):
-    #     """
-    #     jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
-    #     kolumny listę produktów
-    #     Zwraca List informujaca czy w danym dniu zakres lodowki został przekroczony
-    #     """
-    #     if macierz_pom_produktow2 is None:
-    #         macierz_pom_produktow2 = np.empty((len(self.initial_solution), 10))
-    #         for i in range(0, len(self.initial_solution)):
-    #             macierz_pom_produktow2[i] = self.initial_solution[i].lista_produktow
-    #
-    #     ponad_stan_lst_lodowka = []
-    #     bilans_kalorie = []
-    #     aktualny_stan_lodowki = self.poczatkowy_stan_lodowki
-    #     zawartosc_lodowki = []
-    #     for row in range(len(macierz_pom_produktow2)):
-    #
-    #         # print("nowy dzien, lista zakupow")
-    #         # print(macierz_pom_produktow2[row])
-    #         if not all([v == 0 for v in macierz_pom_produktow2[row]]):
-    #             zawartosc_lodowki.append(macierz_pom_produktow2[row])
-    #             aktualny_stan_lodowki += sum(macierz_pom_produktow2[row])
-    #
-    #             # print("dodaje ", sum(macierz_pom_produktow2[row]), " produktow")
-    #
-    #             ponad_stan_lst_lodowka.append(aktualny_stan_lodowki)
-    #
-    #         aktualne_zuzycie = 0
-    #         bilans_kalorie.append(0)
-    #         while aktualne_zuzycie < self.zapotrz_kal:
-    #             if (len(np.nonzero(zawartosc_lodowki)[0])) > 0:
-    #                 # print(zawartosc_lodowki)
-    #                 # print(np.nonzero(zawartosc_lodowki))
-    #                 id_row = np.nonzero(zawartosc_lodowki)[0][0]
-    #                 id_col = np.nonzero(zawartosc_lodowki)[1][0]
-    #                 jedzony_produkt = self.lista_produktow[id_col]
-    #
-    #                 zawartosc_lodowki[id_row][id_col] = 0
-    #                 # if all([v == 0 for v in zawartosc_lodowki[0]]):
-    #                 #   if len(zawartosc_lodowki)==1:
-    #                 #     zawartosc_lodowki = np.zeros((1, 10))
-    #                 #   else:
-    #                 #     zawartosc_lodowki = np.delete(zawartosc_lodowki, 0, 0)
-    #                 kalorycznosc = jedzony_produkt[1]
-    #                 aktualne_zuzycie += kalorycznosc
-    #                 aktualny_stan_lodowki -= 1
-    #
-    #                 # print("usuwam 1 produkt")
-    #
-    #             else:
-    #                 bilans_kalorie.append(aktualne_zuzycie - self.zapotrz_kal)
-    #                 break
-    #
-    #     return ponad_stan_lst_lodowka, bilans_kalorie
 
     def check_capacity(self, macierz_pom_produktow2):
         """
@@ -343,10 +288,11 @@ class Lodowka:
 
     def zwroc_liste_produktow(self, macierz_pom_produktow=None):
         # print("xd", macierz_pom_produktow)
-        if macierz_pom_produktow is not None:
+        if macierz_pom_produktow is not None and isinstance(macierz_pom_produktow, np.ndarray):
             macierz_pom_produktow2 = np.empty((len(macierz_pom_produktow), 10))
             for i in range(0, len(macierz_pom_produktow)):
-                tmp = macierz_pom_produktow[i].lista_produktow
+                tmp = macierz_pom_produktow[i]
+                # print('temp\t', tmp)
                 for j in range(0, len(macierz_pom_produktow[0])):
                     macierz_pom_produktow2[i][j] = tmp[j]
             return macierz_pom_produktow2
