@@ -5,10 +5,9 @@ import copy
 from typing import List, Union, Dict, Tuple, Set, Any
 import random
 
-ograniczenia = ds.Ograniczenia
-
 
 class Lodowka:
+    ograniczenia = ds.Ograniczenia
     poczatkowy_stan_lodowki = ograniczenia.poczatkowy_stan_lodowki  # poczatkowy stan lodowki
 
     maksymalna_poj_lodowki = ograniczenia.maksymalna_poj_lodowki  # maksymalna ilosc produktow w lodowce
@@ -39,30 +38,31 @@ class Lodowka:
     def generete_initial_solution(self) -> List[Union[ds.Solution, Any]]:
         """
         Returns:
-        initial_solution (list): Rozwiązanie początkowe, baza do kolejnych kroków.
-        Kolejne elementy initial_solution oznaczają kolejne dni terminarza.
+        init_solution (list): Rozwiązanie początkowe, baza do kolejnych kroków.
+        Kolejne elementy init_solution oznaczają kolejne dni terminarza.
         Przykładowe elementy listy:
         [1, [0, 0, 1, 0, 0, 1, 0, 1, 1, 1], 0]
         [0, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], -19.0]
-        gdzie:  initial_solution[i][0]: decyzja o pójściu na zakupy
-                initial_solution[i][1]: lista wziętych produktów
-                initial_solution[i][2]: bilans kalorii
+        gdzie:  init_solution[i][0]: decyzja o pójściu na zakupy
+                init_solution[i][1]: lista wziętych produktów
+                init_solution[i][2]: bilans kalorii
 
         """
-        initial_solution = []  # Rozwiązanie początkowe
-        self.lista_produktow = self.lista_produktow.to_numpy()
+        init_solution = []  # Rozwiązanie początkowe
+        self.lista_produktow = np.array(self.lista_produktow)
         aktualny_stan_lodowki = self.poczatkowy_stan_lodowki
         zawartosc_lodowki = []
         for i in range(len(self.terminarz)):
             aktualny_stan_plecaka = 0
             if self.terminarz[i][2] != 0:
                 teoretyczna_lista_zakupow = random.sample(range(10), 10)
+                # print('ttt\n', teoretyczna_lista_zakupow)
                 lista_1 = [0] * len(self.lista_produktow)
                 count = 0
                 while True and count < len(self.lista_produktow):
                     indeks_produktu_ktory_bierzemy = teoretyczna_lista_zakupow[count]
                     waga_produktu = self.lista_produktow[indeks_produktu_ktory_bierzemy][0]
-
+                    # print('idx\n', indeks_produktu_ktory_bierzemy)
                     # sprawdzenie czy produkt który zamierzamy wziąć spełnia ograniczenia lodówki i plecaka:
                     if aktualny_stan_lodowki + 1 <= self.maksymalna_poj_lodowki and aktualny_stan_plecaka + waga_produktu <= self.max_poj_plecaka:
                         lista_1[indeks_produktu_ktory_bierzemy] = 1
@@ -72,14 +72,20 @@ class Lodowka:
                     else:
                         break
                 solution = ds.Solution(decyzja=1, lista_produktow=lista_1, bilans=0)
-                initial_solution.append(solution)
+                init_solution.append(solution)
                 zawartosc_lodowki.append(lista_1)
-            else:
-                temp = [0] * len(self.lista_produktow)
-                solution = ds.Solution(0, temp, 0)
-                initial_solution.append(solution)
+                # print('sol1\t', solution)
 
-            wiersz_copy = copy.deepcopy(initial_solution[-1])
+            elif self.terminarz[i][2] == 0:
+                temp = [0 for i in range(len(self.lista_produktow))]
+                # print(self.lista_produktow)
+                print('x')
+                # print('tmp\t')
+                solution = ds.Solution(0, temp, 0)
+                init_solution.append(solution)
+                # print('sol2\t', solution)
+
+            wiersz_copy = copy.deepcopy(init_solution[-1])
             # aktualizacja zużycia produktow (sprawdzenie w których dniach będzie niedobór kaloryczny (poprawiane następnie w check_kalorie())):
             aktualne_zuzycie = 0
             while aktualne_zuzycie < self.zapotrz_kal:
@@ -92,12 +98,13 @@ class Lodowka:
                     aktualne_zuzycie += kalorycznosc
                     aktualny_stan_lodowki -= 1
                 else:
-                    wiersz_copy[
-                        2] += aktualne_zuzycie - self.zapotrz_kal  # aktualizacja bilansu kalorii (zaznaczenie niedoboru)
+                    wiersz_copy.bilans += aktualne_zuzycie - self.zapotrz_kal  # aktualizacja bilansu kalorii (zaznaczenie niedoboru)
                     break
 
-            initial_solution[-1] = wiersz_copy
-        return initial_solution
+            init_solution[-1] = wiersz_copy
+        # print(init_solution)
+        # print('lista_prod', self.lista_produktow)
+        return init_solution
 
     def check_kalorie(self):
         """
@@ -140,54 +147,57 @@ class Lodowka:
         """
         Generowanie sąsiednich rozwiązan
         """
+        macierz_pom_produktow2 = np.empty((len(self.initial_solution), 10))
         if macierz_pom_produktow is None:
-            macierz_pom_produktow = np.empty((len(self.initial_solution), 10))
+            # macierz_pom_produktow2 = np.empty((len(self.initial_solution), 10))
             for i in range(0, len(self.initial_solution)):
-                macierz_pom_produktow[i] = self.initial_solution[i].lista_produktow
-
+                macierz_pom_produktow2[i] = self.initial_solution[i].lista_produktow
+        else:
+            macierz_pom_produktow2 = copy.deepcopy(macierz_pom_produktow)
         # Zamień miejscami 5 losowo wybranych produktów
         for i in range(50):
             kierunek_przesuniecia = [1, 2, 3, 4]  # 1 - gora, 2 - dol, 3-lewo, 4-
-            x_idx = np.random.randint(0, macierz_pom_produktow.shape[1])
-            y_idx = np.random.randint(0, macierz_pom_produktow.shape[0])
+            x_idx = np.random.randint(0, macierz_pom_produktow2.shape[1])
+            y_idx = np.random.randint(0, macierz_pom_produktow2.shape[0])
             # print(x_idx, y_idx)
             if x_idx == 0:
                 kierunek_przesuniecia.remove(4)
-            elif x_idx == macierz_pom_produktow.shape[1] - 1:
+            elif x_idx == macierz_pom_produktow2.shape[1] - 1:
                 kierunek_przesuniecia.remove(2)
 
             if y_idx == 0:
                 kierunek_przesuniecia.remove(1)
 
-            elif y_idx == macierz_pom_produktow.shape[0] - 1:
+            elif y_idx == macierz_pom_produktow2.shape[0] - 1:
                 kierunek_przesuniecia.remove(3)
 
             kierunek_przesuniecia_wybor = random.choice(kierunek_przesuniecia)
             # print(kierunek_przesuniecia_wybor)
             if kierunek_przesuniecia_wybor == 1:  # gora
-                macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx - 1, x_idx] = macierz_pom_produktow[
+                macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx - 1, x_idx] = macierz_pom_produktow2[
                                                                                                    y_idx - 1, x_idx], \
-                                                                                               macierz_pom_produktow[
+                                                                                                 macierz_pom_produktow2[
                                                                                                    y_idx, x_idx]
             elif kierunek_przesuniecia_wybor == 3:  # dol
-                macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx + 1, x_idx] = macierz_pom_produktow[
+                macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx + 1, x_idx] = macierz_pom_produktow2[
                                                                                                    y_idx + 1, x_idx], \
-                                                                                               macierz_pom_produktow[
+                                                                                                 macierz_pom_produktow2[
                                                                                                    y_idx, x_idx]
 
             elif kierunek_przesuniecia_wybor == 2:  # prawo
-                macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx, x_idx + 1] = macierz_pom_produktow[
+                macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx, x_idx + 1] = macierz_pom_produktow2[
                                                                                                    y_idx, x_idx + 1], \
-                                                                                               macierz_pom_produktow[
+                                                                                                 macierz_pom_produktow2[
                                                                                                    y_idx, x_idx]
             else:  # lewo
-                macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx, x_idx - 1] = macierz_pom_produktow[
+                macierz_pom_produktow2[y_idx, x_idx], macierz_pom_produktow2[y_idx, x_idx - 1] = macierz_pom_produktow2[
                                                                                                    y_idx, x_idx - 1], \
-                                                                                               macierz_pom_produktow[
+                                                                                                 macierz_pom_produktow2[
                                                                                                    y_idx, x_idx]
 
         # self.tabu_list.append(copy.deepcopy(macierz_pom_produktow))
-        return macierz_pom_produktow
+
+        return macierz_pom_produktow2
 
     def check_weight(self, macierz_pom_produktow: np.ndarray) -> List[bool]:
         """
@@ -209,13 +219,68 @@ class Lodowka:
 
         return ponad_stan_lst
 
-    def check_capacity(self, macierz_pom_produktow2=None):
+    # def check_capacity(self, macierz_pom_produktow2=None):
+    #     """
+    #     jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
+    #     kolumny listę produktów
+    #     Zwraca List informujaca czy w danym dniu zakres lodowki został przekroczony
+    #     """
+    #     if macierz_pom_produktow2 is None:
+    #         macierz_pom_produktow2 = np.empty((len(self.initial_solution), 10))
+    #         for i in range(0, len(self.initial_solution)):
+    #             macierz_pom_produktow2[i] = self.initial_solution[i].lista_produktow
+    #
+    #     ponad_stan_lst_lodowka = []
+    #     bilans_kalorie = []
+    #     aktualny_stan_lodowki = self.poczatkowy_stan_lodowki
+    #     zawartosc_lodowki = []
+    #     for row in range(len(macierz_pom_produktow2)):
+    #
+    #         # print("nowy dzien, lista zakupow")
+    #         # print(macierz_pom_produktow2[row])
+    #         if not all([v == 0 for v in macierz_pom_produktow2[row]]):
+    #             zawartosc_lodowki.append(macierz_pom_produktow2[row])
+    #             aktualny_stan_lodowki += sum(macierz_pom_produktow2[row])
+    #
+    #             # print("dodaje ", sum(macierz_pom_produktow2[row]), " produktow")
+    #
+    #             ponad_stan_lst_lodowka.append(aktualny_stan_lodowki)
+    #
+    #         aktualne_zuzycie = 0
+    #         bilans_kalorie.append(0)
+    #         while aktualne_zuzycie < self.zapotrz_kal:
+    #             if (len(np.nonzero(zawartosc_lodowki)[0])) > 0:
+    #                 # print(zawartosc_lodowki)
+    #                 # print(np.nonzero(zawartosc_lodowki))
+    #                 id_row = np.nonzero(zawartosc_lodowki)[0][0]
+    #                 id_col = np.nonzero(zawartosc_lodowki)[1][0]
+    #                 jedzony_produkt = self.lista_produktow[id_col]
+    #
+    #                 zawartosc_lodowki[id_row][id_col] = 0
+    #                 # if all([v == 0 for v in zawartosc_lodowki[0]]):
+    #                 #   if len(zawartosc_lodowki)==1:
+    #                 #     zawartosc_lodowki = np.zeros((1, 10))
+    #                 #   else:
+    #                 #     zawartosc_lodowki = np.delete(zawartosc_lodowki, 0, 0)
+    #                 kalorycznosc = jedzony_produkt[1]
+    #                 aktualne_zuzycie += kalorycznosc
+    #                 aktualny_stan_lodowki -= 1
+    #
+    #                 # print("usuwam 1 produkt")
+    #
+    #             else:
+    #                 bilans_kalorie.append(aktualne_zuzycie - self.zapotrz_kal)
+    #                 break
+    #
+    #     return ponad_stan_lst_lodowka, bilans_kalorie
+
+    def check_capacity(self, macierz_pom_produktow2):
         """
         jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
         kolumny listę produktów
         Zwraca List informujaca czy w danym dniu zakres lodowki został przekroczony
         """
-        if macierz_pom_produktow2 is None:
+        if isinstance(macierz_pom_produktow2[0], ds.Solution):
             macierz_pom_produktow2 = np.empty((len(self.initial_solution), 10))
             for i in range(0, len(self.initial_solution)):
                 macierz_pom_produktow2[i] = self.initial_solution[i].lista_produktow
@@ -270,26 +335,6 @@ class Lodowka:
         """
         return next((True for elem in self.tabu_list if elem is current_solution), False)
 
-    # def check_current_sol_in_tabu_list(self, list_of_sol, current_solution: np.ndarray) -> bool:
-
-    #   list_of_solution: List[bool] = []
-    #   for elem in range(len(list_of_sol)):
-    #       for i in range(len(list_of_sol[elem])):
-    #           same_elem: bool = True
-    #           for j in range(len(list_of_sol[elem][i])):
-    #               if current_solution[i][j] != list_of_sol[elem][i][j]:
-    #                   same_elem = False
-    #                   break
-    #               else:
-    #                   same_elem = True
-    #           if same_elem is False:
-    #               break
-    #       if same_elem is False:
-    #           list_of_solution.append(False)
-    #       else:
-    #           list_of_solution.append(True)
-    #   return any(list_of_solution)
-
     def zwroc_najlepsze_rozwiazanie(self, initial_solution):
         min = 0
         for i in range(len(initial_solution)):
@@ -297,11 +342,13 @@ class Lodowka:
         return min
 
     def zwroc_liste_produktow(self, macierz_pom_produktow=None):
-
+        # print("xd", macierz_pom_produktow)
         if macierz_pom_produktow is not None:
             macierz_pom_produktow2 = np.empty((len(macierz_pom_produktow), 10))
             for i in range(0, len(macierz_pom_produktow)):
-                macierz_pom_produktow2[i] = macierz_pom_produktow[i][1]
+                tmp = macierz_pom_produktow[i].lista_produktow
+                for j in range(0, len(macierz_pom_produktow[0])):
+                    macierz_pom_produktow2[i][j] = tmp[j]
             return macierz_pom_produktow2
 
         else:
@@ -310,7 +357,7 @@ class Lodowka:
                 macierz_pom_produktow[i] = self.initial_solution[i].lista_produktow
             return macierz_pom_produktow
 
-    def postac_do_rozwiazania(self, lista_produktow):
+    def postac_do_rozwiazania(self, lista_produktow) -> List[ds.Solution]:
         lista = copy.deepcopy(lista_produktow)
         rozwiazanie = []
         bilans = self.check_capacity(lista)[1]
@@ -322,13 +369,20 @@ class Lodowka:
             rozwiazanie.append(solution)
         return rozwiazanie
 
+    def print_solution(self, solution: List[ds.Solution]):
+        S = ''
+        for elem in solution:
+            S += f"{elem}\n"
+        print(S)
+
     def tabu_solution(self):
         it = 0
         lista_produktow_poczatkowa = self.zwroc_liste_produktow()
         self.tabu_list.append(lista_produktow_poczatkowa)
         print("Poczatkowe najlepsze rozwiazanie",
               self.zwroc_najlepsze_rozwiazanie(self.postac_do_rozwiazania(lista_produktow_poczatkowa)))
-        print("AXDDDDD", self.postac_do_rozwiazania(lista_produktow_poczatkowa))
+        # print("AXDDDDD", self.postac_do_rozwiazania(lista_produktow_poczatkowa))
+        self.print_solution(self.postac_do_rozwiazania(lista_produktow_poczatkowa))
         # print("przed while", it)
         poprzednie_rozwiazanie = self.zwroc_liste_produktow()
 
@@ -339,6 +393,7 @@ class Lodowka:
             sasiednie_rozwiazanie = self.step1(copy_for_step)
             # self.check_kalorie()
             sasiednie_rozwiazanie = self.zwroc_liste_produktow(sasiednie_rozwiazanie)
+
             for_check = copy.deepcopy(sasiednie_rozwiazanie)
             sasiednie_rozwiazanie_lodowka_ponad_stan, kalorie_sasiednie_rozwiazanie = self.check_capacity(
                 macierz_pom_produktow2=for_check)
@@ -360,17 +415,20 @@ class Lodowka:
                 print("rowz NIE w liscie tabu \t", it)
                 rozwiazanie = self.postac_do_rozwiazania(sasiednie_rozwiazanie)
                 best_current_sol = self.zwroc_najlepsze_rozwiazanie(rozwiazanie)
+                print("rozwiazanie_poprzednie: ", rozwiazanie)
                 poprzednie_rozwiazanie = self.zwroc_liste_produktow(rozwiazanie)
 
                 if self.zwroc_najlepsze_rozwiazanie(self.best_solution) > best_current_sol:
                     print("Najlepsze rozwiazanie\t: ", best_current_sol)
-                    print(rozwiazanie)
+                    # print(rozwiazanie)
+                    self.print_solution(solution=rozwiazanie)
                     self.best_solution = rozwiazanie
                     print("Kolejne rozwiazania: \t", best_current_sol)
                     print(rozwiazanie)
                 else:
                     print("NIE najlepsze rozwiazanie\t", best_current_sol)
-                    print(rozwiazanie)
+                    # print(rozwiazanie)
+                    self.print_solution(rozwiazanie)
                     continue
 
     # def __str__(self):

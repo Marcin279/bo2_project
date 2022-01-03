@@ -58,7 +58,13 @@ class Solution:
         self.bilans = bilans
 
     def __str__(self):
-        return f"{self.decyzja}\t{self.lista_produktow}\t{self.bilans}"
+        return f"d:{self.decyzja} lst: {self.lista_produktow} b: {self.bilans}"
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __len__(self):
+        return len(self.lista_produktow)
 
 
 # lista_swiat = [datetime.date(2022, 1, 1),
