@@ -114,5 +114,5 @@ if __name__ == '__main__':
     # test_step1()
     # test_check_capacity()
     # test_check_current_solution_in_tabu_list()
-    # test_tabu_solution()
-    print(test_genetic_algo())
+    test_tabu_solution()
+    # print(test_genetic_algo())
