@@ -40,7 +40,7 @@ def evaluate_chromosome(solution):
     return min
 
 
-def eval_init_population(init_population):
+def eval_init_population(init_population): #wyliczenie wartosci funkcji celu dla osobnika
     evaluated_init_population = []
     for i in range(len(init_population)):
         evaluated_init_population.append((init_population[i], evaluate_chromosome(init_population[i])))
@@ -49,6 +49,8 @@ def eval_init_population(init_population):
 
 # Step 3. Choose P/2 parents from the current population via proportional selection.
 def rulette(evaluated_init_population):
+    #zwraca lista[decyzja, lista_prod, bilnas]
+
     parents_list = []
     iter = 0
     list_eval = copy.deepcopy(evaluated_init_population)
@@ -80,18 +82,92 @@ def rulette(evaluated_init_population):
                 break
             else:
                 continue
-        parents_list.append(list_eval.pop(chosen_point))
+        parents_list.append(list_eval.pop(chosen_point)[0])
 
     return parents_list
 
 
 # Step 4. Randomly select two parents to create offspring using crossover operator.
-def return_pairs():
-    pass
+def return_pairs(parents_list):
+    pairs_list = []
+    for i in range(0, len(parents_list), 2):
+        pairs_list.append((parents_list[i], parents_list[i+1]))
+    return pairs_list
 
+def crossover(pairs_list):
+    offsprings_list = []
+    for i in range(len(pairs_list)):
+    # Step 6. Repeat Steps  4 and 5 until all parents are selected and mated.
+        cutpoint = random.randint(1, len(pairs_list[i][0])-1)
+        print('cutpoint = ',cutpoint)
+        offspring1 = []
+        offspring2 = []
+        for j in range(len(pairs_list[i][0])):
+            if j < cutpoint:
+                offspring1.append(pairs_list[i][0][j][1])
+                offspring2.append(pairs_list[i][1][j][1])
+            else:
+                offspring1.append(pairs_list[i][1][j][1])
+                offspring2.append(pairs_list[i][0][j][1])
+        offsprings_list.append(offspring1)
+        offsprings_list.append(offspring2)
+    return offsprings_list
+                            
 # Step 5. Apply mutation operators for minor changes in the results.
+def mutation_singular(self, macierz_pom_produktow, ile_zamian):
+    if ile_zamian == None:
+        ile_zamian = int(macierz_pom_produktow.shape[0]/7*30)
+    
+    for i in range(ile_zamian):
+        kierunek_przesuniecia = [1, 2, 3, 4]  # 1 - gora, 2 - dol, 3-lewo, 4-
+        x_idx = np.random.randint(0, macierz_pom_produktow.shape[1])
+        y_idx = np.random.randint(0, macierz_pom_produktow.shape[0])
+        if x_idx == 0:
+            kierunek_przesuniecia.remove(4)
+        elif x_idx == macierz_pom_produktow.shape[1] - 1:
+            kierunek_przesuniecia.remove(2)
 
-# Step 6. Repeat Steps  4 and 5 until all parents are selected and mated.
+        if y_idx == 0:
+            kierunek_przesuniecia.remove(1)
+
+        elif y_idx == macierz_pom_produktow.shape[0] - 1:
+            kierunek_przesuniecia.remove(3)
+
+        kierunek_przesuniecia_wybor = random.choice(kierunek_przesuniecia)
+        if kierunek_przesuniecia_wybor == 1:  # gora
+            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx - 1, x_idx] = macierz_pom_produktow[
+                                                                                                y_idx - 1, x_idx], \
+                                                                                            macierz_pom_produktow[
+                                                                                                y_idx, x_idx]
+        elif kierunek_przesuniecia_wybor == 3:  # dol
+            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx + 1, x_idx] = macierz_pom_produktow[
+                                                                                                y_idx + 1, x_idx], \
+                                                                                            macierz_pom_produktow[
+                                                                                                y_idx, x_idx]
+
+        elif kierunek_przesuniecia_wybor == 2:  # prawo
+            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx, x_idx + 1] = macierz_pom_produktow[
+                                                                                                y_idx, x_idx + 1], \
+                                                                                            macierz_pom_produktow[
+                                                                                                y_idx, x_idx]
+        else:  # lewo
+            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx, x_idx - 1] = macierz_pom_produktow[
+                                                                                                y_idx, x_idx - 1], \
+                                                                                            macierz_pom_produktow[
+                                                                                                y_idx, x_idx]
+
+    return macierz_pom_produktow
+
+
+def mutation(offsprings_list, prob_od_mut = 0.1, changes_no = None):
+    offsprings_list_mutated = []
+    for i in range(len(offsprings_list)):
+        mutation = random.random()
+        if mutation <= prob_od_mut:
+            offsprings_list_mutated.append(mutation_singular(offsprings_list[i]))
+        else:
+            offsprings_list_mutated.append(offsprings_list[i])
+    return offsprings_list_mutated
 
 # Step 7. Replace old population of chromosomes with new one.
 

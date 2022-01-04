@@ -95,15 +95,30 @@ def test_genetic_algo():
     sol = gen.init_population(10, terminarz, lista_produktow)
 
     # for i in range(len(sol)):
-    #   print(sol[i])
+    #   print(sol[i],'\n')
 
     sol_2 = gen.eval_init_population(sol)
 
     # for i in range(len(sol)):
-    #   print(sol_2[i])
+    #   print(sol_2[i],'\n')
 
     rull = gen.rulette(sol_2)
+
     gen.print_solution(sol)
+    print('\n')
+    print(rull[0])
+
+    print('\n')
+    pairs = gen.return_pairs(rull)
+    for i in range(len(pairs)):
+      print(pairs[i],'\n')
+
+    offspring = gen.crossover(pairs)
+    # for i in range(len(offspring)):
+    #   print(offspring[i],'\n')
+    offs_mut = gen.mutation(offspring)
+    for i in range(len(offs_mut)):
+      print(offs_mut[i],'\n')
 
 
 if __name__ == '__main__':
@@ -114,5 +129,5 @@ if __name__ == '__main__':
     # test_step1()
     # test_check_capacity()
     # test_check_current_solution_in_tabu_list()
-    test_tabu_solution()
-    # print(test_genetic_algo())
+    # test_tabu_solution()
+    print(test_genetic_algo())
