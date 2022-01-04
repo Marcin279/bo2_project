@@ -68,11 +68,11 @@ def test_check_current_solution_in_tabu_list():
 
 
 def test_tabu_solution():
-    terminarz1 = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
-    lista_produktow1 = ds.generuj_liste_produktow()
-    lod1 = tsol.Lodowka(terminarz1, lista_produktow1)
+    terminarz = ds.return_calendar(1, 1, 2022, 30, 1, 2022)
+    lista_produktow = ds.generuj_liste_produktow()
+    lod1 = tsol.lodowka(terminarz, lista_produktow)
     lod1.tabu_solution()
-    print(lod1.best_solution)
+    lod1.print_solution(lod1.best_solution)
     print(lod1.zwroc_najlepsze_rozwiazanie(lod1.best_solution))
 
 
