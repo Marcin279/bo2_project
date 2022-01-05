@@ -6,6 +6,20 @@ from typing import List, Union, Dict, Tuple, Set, Any
 import random
 from src.tabu_solution import lodowka
 
+lista_produktow = np.array([
+        [5.600e-01, 1.335e+03],
+        [2.500e-01, 1.274e+03],
+        [3.800e-01, 6.570e+02],
+        [7.000e-02, 1.258e+03],
+        [1.100e-01, 8.410e+02],
+        [5.500e-01, 1.146e+03],
+        [3.200e-01, 9.850e+02],
+        [2.000e-02, 8.490e+02],
+        [1.400e-01, 1.235e+03],
+        [1.000e-01, 1.343e+03]])
+
+ograniczenia = ds.Ograniczenia()
+
 
 def print_solution(solution):
     S = ''
@@ -99,7 +113,6 @@ def crossover(pairs_list):
     for i in range(len(pairs_list)):
     # Step 6. Repeat Steps  4 and 5 until all parents are selected and mated.
         cutpoint = random.randint(1, len(pairs_list[i][0])-1)
-        print('cutpoint = ',cutpoint)
         offspring1 = []
         offspring2 = []
         for j in range(len(pairs_list[i][0])):
@@ -114,7 +127,7 @@ def crossover(pairs_list):
     return offsprings_list
                             
 # Step 5. Apply mutation operators for minor changes in the results.
-def mutation_singular(self, macierz_pom_produktow, ile_zamian):
+def mutation_singular(macierz_pom_produktow, ile_zamian = None):
     if ile_zamian == None:
         ile_zamian = int(macierz_pom_produktow.shape[0]/7*30)
     
@@ -164,10 +177,76 @@ def mutation(offsprings_list, prob_od_mut = 0.1, changes_no = None):
     for i in range(len(offsprings_list)):
         mutation = random.random()
         if mutation <= prob_od_mut:
-            offsprings_list_mutated.append(mutation_singular(offsprings_list[i]))
+            mutated = mutation_singular(np.array(offsprings_list[i]))
+            offsprings_list_mutated.append(mutated)
         else:
             offsprings_list_mutated.append(offsprings_list[i])
     return offsprings_list_mutated
+
+#!! napisac w dokumentacji o dostosowaniu plecaka do wag
+
+#po mutacji mozemy  sprawdzac poprawnosc otrzymanego osobnika (czy spelnia zalozenia)
+#jezeli nie to mozemy
+#a) odrzucic go i do wynikowej listy osobnikow (nowej populacji) go nie wpisywac
+#   -> zeby populacja sie nie zmniejszala mozemy ze starej populacji podmmieniac te osobniki o najgorszej wartosci f celu
+# b) mozemy go probowac poprawiac (jezeli brakuje kalorii do dodawac produkty) -> zeby nie bylo problemu to mozemy zwiekszyc ktores z ograniczen
+# z kotrego bysmy nie skorzystali rozwiazania trzeba bedzie dokladnie opisac w dokumenacji, bo to nie jest zbyt "standardowe" rozwiazanie 
+
+def check_offspring_singular(offspring):
+    """
+    jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
+    kolumny listę produktów
+    Zwraca bool - czy osobnik spelnia zalozenia, czy nie
+    """
+    # if offspring is None:
+    #     offspring = np.empty((len(self.initial_solution), 10))
+    #     for i in range(0, len(self.initial_solution)):
+    #         offspring[i] = self.initial_solution[i][1]
+
+    ponad_stan_lst_lodowka = []
+    bilans_kalorie = []
+    aktualny_stan_lodowki = ograniczenia.poczatkowy_stan_lodowki
+    zawartosc_lodowki = []
+    for row in range(len(offspring)):
+
+        if not all([v == 0 for v in offspring[row]]):
+            zawartosc_lodowki.append(offspring[row])
+            aktualny_stan_lodowki += sum(offspring[row])
+            ponad_stan_lst_lodowka.append(aktualny_stan_lodowki)
+
+        aktualne_zuzycie = 0
+        bilans_kalorie.append(0)
+        while aktualne_zuzycie < ograniczenia.zapotrz_kal:
+            if (len(np.nonzero(zawartosc_lodowki)[0])) > 0:
+                id_row = np.nonzero(zawartosc_lodowki)[0][0]
+                id_col = np.nonzero(zawartosc_lodowki)[1][0]
+                jedzony_produkt = lista_produktow[id_col]
+
+                zawartosc_lodowki[id_row][id_col] = 0
+                kalorycznosc = jedzony_produkt[1]
+                aktualne_zuzycie += kalorycznosc
+                aktualny_stan_lodowki -= 1
+
+            else:
+                bilans_kalorie.append(aktualne_zuzycie - ograniczenia.zapotrz_kal)
+                break
+    if all(ponad_stan_lst_lodowka)<ograniczenia.maksymalna_poj_lodowki and all(bilans_kalorie)==0:
+        return 1
+    return 0
+
+def check_offspring(offsprings_list_mutated):
+    offsprings_checked = []
+    for i in range(len(offsprings_list_mutated)):
+        offs_copy = copy.deepcopy(offsprings_list_mutated[i])
+        offspring_ok = check_offspring_singular(offs_copy)
+        if offspring_ok:
+            print("index", i)
+            offsprings_checked.append(offsprings_list_mutated[i])
+        else:
+            continue
+    return offsprings_checked
+
+
 
 # Step 7. Replace old population of chromosomes with new one.
 

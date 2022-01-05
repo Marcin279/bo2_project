@@ -78,17 +78,19 @@ def test_tabu_solution():
 
 
 def test_genetic_algo():
-    lista_produktow = np.array([
-        [5.600e-01, 1.335e+03],
-        [2.500e-01, 1.274e+03],
-        [3.800e-01, 6.570e+02],
-        [7.000e-02, 1.258e+03],
-        [1.100e-01, 8.410e+02],
-        [5.500e-01, 1.146e+03],
-        [3.200e-01, 9.850e+02],
-        [2.000e-02, 8.490e+02],
-        [1.400e-01, 1.235e+03],
-        [1.000e-01, 1.343e+03]])
+
+    # lista_produktow = np.array([
+    #     [5.600e-01, 1.335e+03],
+    #     [2.500e-01, 1.274e+03],
+    #     [3.800e-01, 6.570e+02],
+    #     [7.000e-02, 1.258e+03],
+    #     [1.100e-01, 8.410e+02],
+    #     [5.500e-01, 1.146e+03],
+    #     [3.200e-01, 9.850e+02],
+    #     [2.000e-02, 8.490e+02],
+    #     [1.400e-01, 1.235e+03],
+    #     [1.000e-01, 1.343e+03]])
+    lista_produktow = gen.lista_produktow
 
     terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
 
@@ -104,23 +106,29 @@ def test_genetic_algo():
 
     rull = gen.rulette(sol_2)
 
-    gen.print_solution(sol)
-    print('\n')
-    print(rull[0])
+    # gen.print_solution(sol)
+    # print('\n')
+    # print(rull[0])
 
     print('\n')
     pairs = gen.return_pairs(rull)
-    for i in range(len(pairs)):
-      print(pairs[i],'\n')
+    # for i in range(len(pairs)):
+    #   print(pairs[i],'\n')
 
     offspring = gen.crossover(pairs)
     # for i in range(len(offspring)):
     #   print(offspring[i],'\n')
+
+    print("lista offspringow po krzyzowaniu",len(offspring))
     offs_mut = gen.mutation(offspring)
     for i in range(len(offs_mut)):
-      print(offs_mut[i],'\n')
+        print(offs_mut[i],'\n')
 
 
+    for i in range(len(offs_mut)):
+        print(gen.check_offspring_singular(offs_mut[i]),'\n')
+
+    print(gen.check_offspring(offs_mut))
 if __name__ == '__main__':
     # print(ds.return_calendar(3, 1, 2022, 15, 1, 2022))
     # test_solution_structures()
