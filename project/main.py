@@ -119,6 +119,35 @@ def test_genetic_algo():
     # for i in range(len(offspring)):
     #   print(offspring[i],'\n')
 
+    # print("lista offspringow po krzyzowaniu", len(offspring))
+    offs_mut = gen.mutation(offspring)
+
+    # gen.print_solution2(offs_mut, title='lista_offspringow po mutacji')
+
+    # for i in range(len(offs_mut)):
+    #     print(gen.check_offspring_singular(offs_mut[i]), '\n')
+
+    offspings_checked = gen.check_offspring(offs_mut)
+    # gen.print_solution2(offspings_checked, title = 'offspings_checked')
+
+    # Nie wiadomo czy dziala rull [[1, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 0]
+    x = gen.replace_old_pop_with_new_one(rull, offspings_checked)
+    print(x)
+
+
+    # gen.print_solution(sol)
+    # print('\n')
+    # print(rull[0])
+
+    print('\n')
+    pairs = gen.return_pairs(rull)
+    # for i in range(len(pairs)):
+    #   print(pairs[i],'\n')
+
+    offspring = gen.crossover(pairs)
+    # for i in range(len(offspring)):
+    #   print(offspring[i],'\n')
+
     print("lista offspringow po krzyzowaniu",len(offspring))
     offs_mut = gen.mutation(offspring)
     for i in range(len(offs_mut)):
@@ -138,4 +167,4 @@ if __name__ == '__main__':
     # test_check_capacity()
     # test_check_current_solution_in_tabu_list()
     # test_tabu_solution()
-    print(test_genetic_algo())
+    test_genetic_algo()
