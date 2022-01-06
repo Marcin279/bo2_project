@@ -78,7 +78,6 @@ def test_tabu_solution():
 
 
 def test_genetic_algo():
-
     # lista_produktow = np.array([
     #     [5.600e-01, 1.335e+03],
     #     [2.500e-01, 1.274e+03],
@@ -135,29 +134,6 @@ def test_genetic_algo():
     print(x)
 
 
-    # gen.print_solution(sol)
-    # print('\n')
-    # print(rull[0])
-
-    print('\n')
-    pairs = gen.return_pairs(rull)
-    # for i in range(len(pairs)):
-    #   print(pairs[i],'\n')
-
-    offspring = gen.crossover(pairs)
-    # for i in range(len(offspring)):
-    #   print(offspring[i],'\n')
-
-    print("lista offspringow po krzyzowaniu",len(offspring))
-    offs_mut = gen.mutation(offspring)
-    for i in range(len(offs_mut)):
-        print(offs_mut[i],'\n')
-
-
-    for i in range(len(offs_mut)):
-        print(gen.check_offspring_singular(offs_mut[i]),'\n')
-
-    print(gen.check_offspring(offs_mut))
 if __name__ == '__main__':
     # print(ds.return_calendar(3, 1, 2022, 15, 1, 2022))
     # test_solution_structures()
