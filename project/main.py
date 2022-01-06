@@ -78,7 +78,6 @@ def test_tabu_solution():
 
 
 def test_genetic_algo():
-
     # lista_produktow = np.array([
     #     [5.600e-01, 1.335e+03],
     #     [2.500e-01, 1.274e+03],
@@ -119,16 +118,22 @@ def test_genetic_algo():
     # for i in range(len(offspring)):
     #   print(offspring[i],'\n')
 
-    print("lista offspringow po krzyzowaniu",len(offspring))
+    # print("lista offspringow po krzyzowaniu", len(offspring))
     offs_mut = gen.mutation(offspring)
-    for i in range(len(offs_mut)):
-        print(offs_mut[i],'\n')
+
+    # gen.print_solution2(offs_mut, title='lista_offspringow po mutacji')
+
+    # for i in range(len(offs_mut)):
+    #     print(gen.check_offspring_singular(offs_mut[i]), '\n')
+
+    offspings_checked = gen.check_offspring(offs_mut)
+    # gen.print_solution2(offspings_checked, title = 'offspings_checked')
+
+    # Nie wiadomo czy dziala rull [[1, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 0]
+    x = gen.replace_old_pop_with_new_one(rull, offspings_checked)
+    print(x)
 
 
-    for i in range(len(offs_mut)):
-        print(gen.check_offspring_singular(offs_mut[i]),'\n')
-
-    print(gen.check_offspring(offs_mut))
 if __name__ == '__main__':
     # print(ds.return_calendar(3, 1, 2022, 15, 1, 2022))
     # test_solution_structures()
@@ -138,4 +143,4 @@ if __name__ == '__main__':
     # test_check_capacity()
     # test_check_current_solution_in_tabu_list()
     # test_tabu_solution()
-    print(test_genetic_algo())
+    test_genetic_algo()
