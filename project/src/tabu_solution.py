@@ -1,5 +1,5 @@
 import numpy as np
-import src.data_structures as ds
+# import src.data_structures as ds
 # from src.data_structures import
 import copy
 from typing import List, Union, Dict, Tuple, Set, Any
@@ -46,7 +46,7 @@ class lodowka():
 
         """
         initial_solution = []  # Rozwiązanie początkowe
-        self.lista_produktow = self.lista_produktow.to_numpy()
+        self.lista_produktow = np.array(self.lista_produktow)
         aktualny_stan_lodowki = self.poczatkowy_stan_lodowki
         zawartosc_lodowki = []
         for i in range(len(self.terminarz)):
