@@ -203,7 +203,10 @@ def mutation(offsprings_list, prob_od_mut=0.1, changes_no=None):
 # z kotrego bysmy nie skorzystali rozwiazania trzeba bedzie dokladnie opisac w dokumenacji, bo to nie jest zbyt "standardowe" rozwiazanie
 
 
-# sprawdzenie poprawności jednego osobnika
+
+
+#sprawdzenie poprawności jednego osobnika
+
 def check_offspring_singular(offspring):
     """
     jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
@@ -245,6 +248,7 @@ def check_offspring_singular(offspring):
 
 
 # sprawdzenie poprawności pojedynczego osobnika po krzyżowaniu i mutacji
+
 def check_offspring(offsprings_list_mutated):
     offsprings_checked = []
     for i in range(len(offsprings_list_mutated)):
@@ -264,7 +268,6 @@ def if_row_has_zero(row: List[int]) -> int:
     else:
         return 0
 
-
 def evaluate_1(individual: List[List[int]]):
     sum = 0
     for elem in individual:
@@ -272,7 +275,8 @@ def evaluate_1(individual: List[List[int]]):
     return sum
 
 
-# sprawdzenie poprawności osobników po krzyżowaniu i mutacji
+
+#sprawdzenie poprawności osobników po krzyżowaniu i mutacji
 def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_population: List[List[List[int]]]):
     result_for_old = []
     for elem in old_population:
