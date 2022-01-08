@@ -63,64 +63,79 @@ def evaluate_chromosome(solution):
 
 def eval_init_population(init_population):  # wyliczenie wartosci funkcji celu dla osobnika
     evaluated_init_population = []
+    # lista_pomocnicza = []
     for i in range(len(init_population)):
         evaluated_init_population.append((init_population[i], evaluate_chromosome(init_population[i])))
+        # lista_pomocnicza.append(evaluate_chromosome(init_population[i]))
+    # print(lista_pomocnicza)
+
     return evaluated_init_population
 
 
 # Step 3. Choose P/2 parents from the current population via proportional selection.
-def rulette(evaluated_init_population):
+def rulette(evaluated_init_population, len_init_population):
     """
     zwraca lista[decyzja, lista_prod, bilnas]
     :param evaluated_init_population:
     :return: lista[decyzja, lista_prod, bilnas]
     """
-
-
+    
     parents_list = []
-    iter = 0
+    ite = 0
     list_eval = copy.deepcopy(evaluated_init_population)
+    
+    # print(evaluated_init_population)
+    # lista_pomocnicza = []
+    # for i in range(len(evaluated_init_population)):
+    #     lista_pomocnicza.append((evaluated_init_population[i][1]))
+    # print(lista_pomocnicza)
+    # print(evaluated_init_population[0])
 
-    how_many = len(evaluated_init_population) // 2
+    how_many = len_init_population // 2
     if how_many % 2 != 0:
         how_many += 1
 
-    while iter < how_many:
-        iter += 1
-        suma_po_wyjsciach = 0
-        for i in range(len(list_eval)):
-            suma_po_wyjsciach += list_eval[i][1]
+    lista_pomocnicza2 = []
+    while ite < how_many:
+        ite += 1
+        elem = list_eval.pop(0)
+        parents_list.append(elem[0])
+        lista_pomocnicza2.append(elem[1])
 
-        stop_points = [0]
-        for j in range(len(list_eval)):
-            stop_points.append(1 / list_eval[j][1])
-        sum_stop_points = sum(stop_points)
-        normalized_stop_points = [point / sum_stop_points for point in stop_points]
-        normalized_stop_points_summed = [normalized_stop_points[0]]
-        for i in range(1, len(normalized_stop_points)):
-            normalized_stop_points_summed.append(normalized_stop_points_summed[i - 1] + normalized_stop_points[i])
+    #     suma_po_wyjsciach = 0
+    #     for i in range(len(list_eval)):
+    #         suma_po_wyjsciach += list_eval[i][1]
 
-        rand = random.random()
-        chosen_point = 0  # indeks rodzica
-        for i in range(len(normalized_stop_points_summed) - 1):
-            if normalized_stop_points_summed[i] <= rand < normalized_stop_points_summed[i + 1]:
-                chosen_point = i
-                break
-            else:
-                continue
-        parents_list.append(list_eval.pop(chosen_point)[0])
+    #     stop_points = [0]
+    #     for j in range(len(list_eval)):
+    #         stop_points.append(1 / list_eval[j][1])
+    #     sum_stop_points = sum(stop_points)
+    #     normalized_stop_points = [point / sum_stop_points for point in stop_points]
+    #     normalized_stop_points_summed = [normalized_stop_points[0]]
+    #     for i in range(1, len(normalized_stop_points)):
+    #         normalized_stop_points_summed.append(normalized_stop_points_summed[i - 1] + normalized_stop_points[i])
 
+    #     rand = random.random()
+    #     chosen_point = 0  # indeks rodzica
+    #     for i in range(len(normalized_stop_points_summed) - 1):
+    #         if normalized_stop_points_summed[i] <= rand < normalized_stop_points_summed[i + 1]:
+    #             chosen_point = i
+    #             break
+    #         else:
+    #             continue
+    #     parents_list.append(list_eval.pop(chosen_point)[0])
+    # print(parents_list[0])
+    # print(lista_pomocnicza2)
     return parents_list
 
 
 # Step 4. Randomly select two parents to create offspring using crossover operator.
 def return_pairs(parents_list):
     pairs_list = []
-    for i in range(0, len(parents_list)-1):
+    for i in range(0, len(parents_list)-1, 2):
         pairs_list.append((parents_list[i], parents_list[i + 1]))
-    pairs_list.append((parents_list[-1], parents_list[0]))
 
-    print('len(pairs_list)',len(pairs_list))
+    # print('len(pairs_list)',len(pairs_list))
     return pairs_list
 
 
@@ -220,10 +235,6 @@ def check_offspring_singular(offspring):
     kolumny listę produktów
     Zwraca bool - czy osobnik spelnia zalozenia, czy nie
     """
-    # if offspring is None:
-    #     offspring = np.empty((len(self.initial_solution), 10))
-    #     for i in range(0, len(self.initial_solution)):
-    #         offspring[i] = self.initial_solution[i][1]
 
     ponad_stan_lst_lodowka = []
     bilans_kalorie = []
@@ -289,42 +300,26 @@ def evaluate_1(individual: List[List[int]]):
 
 # Step 8. Evaluate the fitness of each chromosome in the new population.
 def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_population: List[List[List[int]]]):
-    print('len(old_population)',len(old_population))
-    print('len(new_population)',len(new_population))
-
 
     result_for_old = []
     for elem in old_population:
         pair = elem, evaluate_1(elem)
         result_for_old.append(pair)
-    result_for_old = sorted(result_for_old, key=lambda t: t[1], reverse=False)
-    print('len(result_for_old) po sortowaniu',len(result_for_old))
-
 
     result_for_new = []
     for elem in new_population:
         pair = elem, evaluate_1(elem)
         result_for_new.append(pair)
-    print('len(result_for_new) po eval',len(result_for_new))
 
-
-    for _ in range(0, len(new_population)):
-        if len(result_for_old)!=0:
-            tmp = result_for_old.pop()
-        else:
-            break
-    print('len(result_for_old) po usuwaniu',len(result_for_old))
-
-
+    nowa_lista = []
     for i in range(0, len(result_for_new)):
-        result_for_old.append(result_for_new[i])
-    print('len(result_for_old) po dodawaniu',len(result_for_old))
+        nowa_lista.append(result_for_new[i])
+    for i in range(0, len(result_for_old)):
+        nowa_lista.append(result_for_old[i])
 
+    nowa_lista = sorted(nowa_lista, key=lambda t: t[1], reverse=False)
 
-    result_for_old = sorted(result_for_old, key=lambda t: t[1], reverse=False)
-    print('len(result_for_old) do zwrocenia',len(result_for_old))
-
-    return result_for_old
+    return nowa_lista
 
 def pull_parents_form_parents_longer(old_population):
     parents = []
@@ -364,7 +359,12 @@ def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, p
         # zwraca połowę poczatkowych osobnikow przez losowanie
         # prawdopodobienstwo wybrania osobnika do krzyzowania jest odwrotnie proporcjonalne do wartosci funkcji celu
         # (minimalizujemy jej wartosc)
-        rull = rulette(init_specimen_f_celu)
+        rull = rulette(init_specimen_f_celu, len_init_population)
+        copy_rull = copy.deepcopy(rull)
+        # print('rull')
+
+        # print(rull)
+
 
         # łaczenie wybranych w losowaniu osobników w pary
         pairs = return_pairs(rull)
@@ -379,9 +379,20 @@ def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, p
         # sprawdzenie poprawności otrzymanych po krzyzowaniu i mutacji osobników (bilans kaloryczny oraz upper bound lodowki)
         offspings_checked = check_offspring(offs_mut)
 
-        # zastąpienie osobnikow z poprzedniej populacji o najgorszych wartosciach funkcji celu przez nowe osobniki
-        x = replace_old_pop_with_new_one(pull_parents_form_parents_longer(rull), offspings_checked)
+        # dodanie do starych osobnikow, nowo powstalych
+        x = replace_old_pop_with_new_one(pull_parents_form_parents_longer(copy_rull), offspings_checked)
+        
+        # print('x')
+        # print(x)
+
+
+        print('iteracja = ', i, 'f.celu = ', x[0][1])
+        
+        # len(x) jest miedzy [len(rodzice), 2*len(rodzice)]
         init_specimen  = change_new_popul_to_other_format(x)
+
+        # print('init_specimen')
+        # print(init_specimen)
 
         i+=1
 
