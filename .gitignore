@@ -1,3 +1,10 @@
+.gitignore
+.vscode
+project/.idea
+project/.idea/
+.idea/
+.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
