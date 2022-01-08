@@ -29,6 +29,7 @@ def print_solution2(data: List[List[int]], title: str = '...'):
         print(tmp)
         print('\n')
 
+
 def print_solution(solution):
     S = ''
     for elem in solution:
@@ -66,8 +67,9 @@ def evaluate_chromosome(solution):
         fitness += solution[i][0]
     return fitness
 
+
 # wyliczenie wartosci funkcji celu dla populacji
-def eval_init_population(init_population):  
+def eval_init_population(init_population):
     evaluated_init_population = []
     for i in range(len(init_population)):
         evaluated_init_population.append((init_population[i], evaluate_chromosome(init_population[i])))
@@ -85,11 +87,11 @@ def choose_parents(evaluated_init_population, len_init_population):
     Returns:
     parents_list - lista rodziców wybranych do krzyżowania
     """
-    
+
     parents_list = []
     ite = 0
     list_eval = copy.deepcopy(evaluated_init_population)
-    
+
     how_many = len_init_population // 2
     if how_many % 2 != 0:
         how_many += 1
@@ -103,14 +105,16 @@ def choose_parents(evaluated_init_population, len_init_population):
 
     return parents_list
 
+
 # podział rodziców w pary: 1-2, 3-4 etc
 def return_pairs(parents_list):
     pairs_list = []
-    for i in range(0, len(parents_list)-1, 2):
+    for i in range(0, len(parents_list) - 1, 2):
         pairs_list.append((parents_list[i], parents_list[i + 1]))
     return pairs_list
 
-# crossover 
+
+# crossover
 def crossover(pairs_list):
     offsprings_list = []
     for i in range(len(pairs_list)):
@@ -175,6 +179,7 @@ def mutation_singular(macierz_pom_produktow, ile_zamian=None):
 
     return macierz_pom_produktow
 
+
 # mutowanie osobników
 def mutation(offsprings_list, prob_od_mut=0.1, changes_no=None):
     offsprings_list_mutated = []
@@ -197,6 +202,8 @@ def mutation(offsprings_list, prob_od_mut=0.1, changes_no=None):
 # b) mozemy go probowac poprawiac (jezeli brakuje kalorii do dodawac produkty) -> zeby nie bylo problemu to mozemy zwiekszyc ktores z ograniczen
 # z kotrego bysmy nie skorzystali rozwiazania trzeba bedzie dokladnie opisac w dokumenacji, bo to nie jest zbyt "standardowe" rozwiazanie
 
+
+# sprawdzenie poprawności jednego osobnika
 def check_offspring_singular(offspring):
     """
     jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
@@ -237,6 +244,7 @@ def check_offspring_singular(offspring):
     return 0
 
 
+# sprawdzenie poprawności pojedynczego osobnika po krzyżowaniu i mutacji
 def check_offspring(offsprings_list_mutated):
     offsprings_checked = []
     for i in range(len(offsprings_list_mutated)):
@@ -250,11 +258,9 @@ def check_offspring(offsprings_list_mutated):
     return offsprings_checked
 
 
-# Step 7. Replace old population of chromosomes with new one.
-
 def if_row_has_zero(row: List[int]) -> int:
     if any(row):
-        return 1  
+        return 1
     else:
         return 0
 
@@ -266,9 +272,8 @@ def evaluate_1(individual: List[List[int]]):
     return sum
 
 
-# Step 8. Evaluate the fitness of each chromosome in the new population.
+# sprawdzenie poprawności osobników po krzyżowaniu i mutacji
 def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_population: List[List[List[int]]]):
-
     result_for_old = []
     for elem in old_population:
         pair = elem, evaluate_1(elem)
@@ -289,6 +294,8 @@ def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_popu
 
     return nowa_lista
 
+
+# podmiana formatu rodziców
 def pull_parents_form_parents_longer(old_population):
     parents = []
     for i in range(len(old_population)):
@@ -297,8 +304,6 @@ def pull_parents_form_parents_longer(old_population):
             parents[i].append(old_population[i][j][1])
     return parents
 
-
-# Step 9. Terminate if the number of generations meets some upper bound; otherwise go to Step3.
 
 def change_new_popul_to_other_format(new_population):
     formatted = []
@@ -313,23 +318,20 @@ def change_new_popul_to_other_format(new_population):
     return formatted
 
 
-def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, probability = 0.1, liczba_zamian = None):
-
+def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, probability=0.1, liczba_zamian=None):
     global najlepsze_rozwiazanie
-    #osobniki poczatkowe
+    # osobniki poczatkowe
     init_specimen = init_population(len_init_population, terminarz, lista_produktow)
 
     i = 0
-    while i< upper_bound:
-        #osobniki poczatkowe plus wartosc f celu
+    while i < upper_bound:
+        # osobniki poczatkowe plus wartosc f celu
         init_specimen_f_celu = eval_init_population(init_specimen)
 
-        # zwraca połowę poczatkowych osobnikow przez losowanie
-        # prawdopodobienstwo wybrania osobnika do krzyzowania jest odwrotnie proporcjonalne do wartosci funkcji celu
-        # (minimalizujemy jej wartosc)
+        # zwraca polowe dlugosci pierwotnej listy osobników najlepszych osobników
         parents = choose_parents(init_specimen_f_celu, len_init_population)
         copy_parents = copy.deepcopy(parents)
-  
+
         # łaczenie wybranych w losowaniu osobników w pary
         pairs = return_pairs(parents)
 
@@ -338,28 +340,23 @@ def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, p
 
         # mutowanie osobników z prawdopodobienstwem wystapienia mutacji = probability (wartosc domyslna  = 0.1)
         # oraz liczba zamian przy niej wykonywanych = liczba_zamian (wartosc domysna ~= 30 zamian na tydzień)
-        offs_mut = mutation(offspring, prob_od_mut=probability, changes_no = liczba_zamian)
+        offs_mut = mutation(offspring, prob_od_mut=probability, changes_no=liczba_zamian)
 
         # sprawdzenie poprawności otrzymanych po krzyzowaniu i mutacji osobników (bilans kaloryczny oraz upper bound lodowki)
         offspings_checked = check_offspring(offs_mut)
 
         # dodanie do starych osobnikow, nowo powstalych
         x = replace_old_pop_with_new_one(pull_parents_form_parents_longer(copy_parents), offspings_checked)
-        
-        if x[0][1]< najlepsze_rozwiazanie:
+
+        if x[0][1] < najlepsze_rozwiazanie:
             print('iteracja = ', i, 'f.celu = ', x[0][1])
             najlepsze_rozwiazanie = x[0][1]
 
         # len(x) jest miedzy [len(rodzice), 2*len(rodzice)]
-        init_specimen  = change_new_popul_to_other_format(x)
-        i+=1
+        init_specimen = change_new_popul_to_other_format(x)
+        i += 1
 
     return x
-
-
-
-
-
 
     ####### ŚMIECI ############
 # pierwotna wersja wyboru osobników do krzyżowania

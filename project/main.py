@@ -4,6 +4,25 @@ import src.genetic_algo as gen
 
 import numpy as np
 
+lista_produktow = np.array([
+    [5.600e-01, 1.335e+03],
+    [2.500e-01, 1.274e+03],
+    [3.800e-01, 6.570e+02],
+    [7.000e-02, 1.258e+03],
+    [1.100e-01, 8.410e+02],
+    [5.500e-01, 1.146e+03],
+    [3.200e-01, 9.850e+02],
+    [2.000e-02, 8.490e+02],
+    [1.400e-01, 1.235e+03],
+    [1.000e-01, 1.343e+03]])
+
+calendar = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
+
+
+class Data:
+    lista_produktow = lista_produktow
+    kalendarz = calendar
+
 
 def test_solution_structures():
     # OK
@@ -78,17 +97,6 @@ def test_tabu_solution():
 
 
 def test_genetic_algo():
-    # lista_produktow = np.array([
-    #     [5.600e-01, 1.335e+03],
-    #     [2.500e-01, 1.274e+03],
-    #     [3.800e-01, 6.570e+02],
-    #     [7.000e-02, 1.258e+03],
-    #     [1.100e-01, 8.410e+02],
-    #     [5.500e-01, 1.146e+03],
-    #     [3.200e-01, 9.850e+02],
-    #     [2.000e-02, 8.490e+02],
-    #     [1.400e-01, 1.235e+03],
-    #     [1.000e-01, 1.343e+03]])
     lista_produktow = gen.lista_produktow
 
     terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
@@ -134,22 +142,44 @@ def test_genetic_algo():
     print(len(x))
 
 
+def genetic_algo_print(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw, prawdopodobienstwo_wyst_mutacji):
+    print('dla i = 1000')
+    # solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
+    solution = gen.genetic_algo(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw,
+                                prawdopodobienstwo_wyst_mutacji)
+
+
+def tabu_search_print(params=None):
+    pass
+
+
+class ParamsToGeneticAlgo:
+    iteration = 1000
+    prawdopobienstwo_mutacji = 0.9
+    ilosc_osobnikow_do_reprodukcji = 20
+
+
+class ParamsToTabuSearch:
+    pass
 
 
 if __name__ == '__main__':
-    # print(ds.return_calendar(3, 1, 2022, 15, 1, 2022))
-    # test_solution_structures()
 
-    # test_generate_initial_solution()
-    # test_step1()
-    # test_check_capacity()
-    # test_check_current_solution_in_tabu_list()
-    # test_tabu_solution()
-    # test_genetic_algo()
+    params_to_genetic_algo = ParamsToGeneticAlgo
+    data = Data
 
-    print('dla i = 1000')
+    wybierz_metode_genetic_algo: bool = True
 
-    solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
+    if wybierz_metode_genetic_algo is True:
+        genetic_algo_print(iteracje=params_to_genetic_algo.iteration, lista_produktow=data.lista_produktow,
+                           calendar=data.kalendarz,
+                           ilosc_osobnikow_pierw=params_to_genetic_algo.ilosc_osobnikow_do_reprodukcji,
+                           prawdopodobienstwo_wyst_mutacji=params_to_genetic_algo.prawdopobienstwo_mutacji)
+    else:
+        tabu_search_print(params=None)
+    # print('dla i = 1000')
+    #
+    # solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
 
     # print('dla i = 500')
 
