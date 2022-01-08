@@ -63,61 +63,79 @@ def evaluate_chromosome(solution):
 
 def eval_init_population(init_population):  # wyliczenie wartosci funkcji celu dla osobnika
     evaluated_init_population = []
+    # lista_pomocnicza = []
     for i in range(len(init_population)):
         evaluated_init_population.append((init_population[i], evaluate_chromosome(init_population[i])))
+        # lista_pomocnicza.append(evaluate_chromosome(init_population[i]))
+    # print(lista_pomocnicza)
+
     return evaluated_init_population
 
 
 # Step 3. Choose P/2 parents from the current population via proportional selection.
-def rulette(evaluated_init_population):
+def rulette(evaluated_init_population, len_init_population):
     """
     zwraca lista[decyzja, lista_prod, bilnas]
     :param evaluated_init_population:
     :return: lista[decyzja, lista_prod, bilnas]
     """
 
-
     parents_list = []
-    iter = 0
+    ite = 0
     list_eval = copy.deepcopy(evaluated_init_population)
 
-    how_many = len(evaluated_init_population) // 2
+    # print(evaluated_init_population)
+    # lista_pomocnicza = []
+    # for i in range(len(evaluated_init_population)):
+    #     lista_pomocnicza.append((evaluated_init_population[i][1]))
+    # print(lista_pomocnicza)
+    # print(evaluated_init_population[0])
+
+    how_many = len_init_population // 2
     if how_many % 2 != 0:
         how_many += 1
 
-    while iter < how_many:
-        iter += 1
-        suma_po_wyjsciach = 0
-        for i in range(len(list_eval)):
-            suma_po_wyjsciach += list_eval[i][1]
+    lista_pomocnicza2 = []
+    while ite < how_many:
+        ite += 1
+        elem = list_eval.pop(0)
+        parents_list.append(elem[0])
+        lista_pomocnicza2.append(elem[1])
 
-        stop_points = [0]
-        for j in range(len(list_eval)):
-            stop_points.append(1 / list_eval[j][1])
-        sum_stop_points = sum(stop_points)
-        normalized_stop_points = [point / sum_stop_points for point in stop_points]
-        normalized_stop_points_summed = [normalized_stop_points[0]]
-        for i in range(1, len(normalized_stop_points)):
-            normalized_stop_points_summed.append(normalized_stop_points_summed[i - 1] + normalized_stop_points[i])
+    #     suma_po_wyjsciach = 0
+    #     for i in range(len(list_eval)):
+    #         suma_po_wyjsciach += list_eval[i][1]
 
-        rand = random.random()
-        chosen_point = 0  # indeks rodzica
-        for i in range(len(normalized_stop_points_summed) - 1):
-            if normalized_stop_points_summed[i] <= rand < normalized_stop_points_summed[i + 1]:
-                chosen_point = i
-                break
-            else:
-                continue
-        parents_list.append(list_eval.pop(chosen_point)[0])
+    #     stop_points = [0]
+    #     for j in range(len(list_eval)):
+    #         stop_points.append(1 / list_eval[j][1])
+    #     sum_stop_points = sum(stop_points)
+    #     normalized_stop_points = [point / sum_stop_points for point in stop_points]
+    #     normalized_stop_points_summed = [normalized_stop_points[0]]
+    #     for i in range(1, len(normalized_stop_points)):
+    #         normalized_stop_points_summed.append(normalized_stop_points_summed[i - 1] + normalized_stop_points[i])
 
+    #     rand = random.random()
+    #     chosen_point = 0  # indeks rodzica
+    #     for i in range(len(normalized_stop_points_summed) - 1):
+    #         if normalized_stop_points_summed[i] <= rand < normalized_stop_points_summed[i + 1]:
+    #             chosen_point = i
+    #             break
+    #         else:
+    #             continue
+    #     parents_list.append(list_eval.pop(chosen_point)[0])
+    # print(parents_list[0])
+    # print(lista_pomocnicza2)
     return parents_list
 
 
 # Step 4. Randomly select two parents to create offspring using crossover operator.
 def return_pairs(parents_list):
     pairs_list = []
-    for i in range(0, len(parents_list), 2):
+    for i in range(0, len(parents_list) - 1, 2):
         pairs_list.append((parents_list[i], parents_list[i + 1]))
+
+    # print('len(pairs_list)',len(pairs_list))
     return pairs_list
 
 
@@ -142,46 +160,48 @@ def crossover(pairs_list):
 
 # Step 5. Apply mutation operators for minor changes in the results.
 def mutation_singular(macierz_pom_produktow, ile_zamian=None):
+    macierz_pom_produktow2 = np.array(macierz_pom_produktow)
+
     if ile_zamian == None:
-        ile_zamian = int(macierz_pom_produktow.shape[0] / 7 * 30)
+        ile_zamian = int(macierz_pom_produktow2.shape[0] / 7 * 30)
 
     for i in range(ile_zamian):
         kierunek_przesuniecia = [1, 2, 3, 4]  # 1 - gora, 2 - dol, 3-lewo, 4-
-        x_idx = np.random.randint(0, macierz_pom_produktow.shape[1])
-        y_idx = np.random.randint(0, macierz_pom_produktow.shape[0])
+        x_idx = np.random.randint(0, macierz_pom_produktow2.shape[1])
+        y_idx = np.random.randint(0, macierz_pom_produktow2.shape[0])
         if x_idx == 0:
             kierunek_przesuniecia.remove(4)
-        elif x_idx == macierz_pom_produktow.shape[1] - 1:
+        elif x_idx == macierz_pom_produktow2.shape[1] - 1:
             kierunek_przesuniecia.remove(2)
 
         if y_idx == 0:
             kierunek_przesuniecia.remove(1)
 
-        elif y_idx == macierz_pom_produktow.shape[0] - 1:
+        elif y_idx == macierz_pom_produktow2.shape[0] - 1:
             kierunek_przesuniecia.remove(3)
 
         kierunek_przesuniecia_wybor = random.choice(kierunek_przesuniecia)
         if kierunek_przesuniecia_wybor == 1:  # gora
-            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx - 1, x_idx] = macierz_pom_produktow[
-                                                                                               y_idx - 1, x_idx], \
+            macierz_pom_produktow[y_idx][x_idx], macierz_pom_produktow[y_idx - 1][x_idx] = macierz_pom_produktow[
+                                                                                               y_idx - 1][x_idx], \
                                                                                            macierz_pom_produktow[
-                                                                                               y_idx, x_idx]
+                                                                                               y_idx][x_idx]
         elif kierunek_przesuniecia_wybor == 3:  # dol
-            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx + 1, x_idx] = macierz_pom_produktow[
-                                                                                               y_idx + 1, x_idx], \
+            macierz_pom_produktow[y_idx][x_idx], macierz_pom_produktow[y_idx + 1][x_idx] = macierz_pom_produktow[
+                                                                                               y_idx + 1][x_idx], \
                                                                                            macierz_pom_produktow[
-                                                                                               y_idx, x_idx]
+                                                                                               y_idx][x_idx]
 
         elif kierunek_przesuniecia_wybor == 2:  # prawo
-            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx, x_idx + 1] = macierz_pom_produktow[
-                                                                                               y_idx, x_idx + 1], \
+            macierz_pom_produktow[y_idx][x_idx], macierz_pom_produktow[y_idx][x_idx + 1] = macierz_pom_produktow[
+                                                                                               y_idx][x_idx + 1], \
                                                                                            macierz_pom_produktow[
-                                                                                               y_idx, x_idx]
+                                                                                               y_idx][x_idx]
         else:  # lewo
-            macierz_pom_produktow[y_idx, x_idx], macierz_pom_produktow[y_idx, x_idx - 1] = macierz_pom_produktow[
-                                                                                               y_idx, x_idx - 1], \
+            macierz_pom_produktow[y_idx][x_idx], macierz_pom_produktow[y_idx][x_idx - 1] = macierz_pom_produktow[
+                                                                                               y_idx][x_idx - 1], \
                                                                                            macierz_pom_produktow[
-                                                                                               y_idx, x_idx]
+                                                                                               y_idx][x_idx]
 
     return macierz_pom_produktow
 
@@ -191,10 +211,10 @@ def mutation(offsprings_list, prob_od_mut=0.1, changes_no=None):
     for i in range(len(offsprings_list)):
         mutation = random.random()
         if mutation <= prob_od_mut:
-            mutated = mutation_singular(np.array(offsprings_list[i]))
+            mutated = mutation_singular((offsprings_list[i]), changes_no)
             offsprings_list_mutated.append(mutated)
         else:
-            offsprings_list_mutated.append(offsprings_list[i])
+            offsprings_list_mutated.append((offsprings_list[i]))
     return offsprings_list_mutated
 
 
@@ -213,10 +233,6 @@ def check_offspring_singular(offspring):
     kolumny listę produktów
     Zwraca bool - czy osobnik spelnia zalozenia, czy nie
     """
-    # if offspring is None:
-    #     offspring = np.empty((len(self.initial_solution), 10))
-    #     for i in range(0, len(self.initial_solution)):
-    #         offspring[i] = self.initial_solution[i][1]
 
     ponad_stan_lst_lodowka = []
     bilans_kalorie = []
@@ -245,7 +261,6 @@ def check_offspring_singular(offspring):
             else:
                 bilans_kalorie.append(aktualne_zuzycie - ograniczenia.zapotrz_kal)
                 break
-    print('stan lodowki: ', ponad_stan_lst_lodowka, '\nbilans: ', bilans_kalorie)
     if all([elem <= ograniczenia.maksymalna_poj_lodowki for elem in
             ponad_stan_lst_lodowka]) and all([elem == 0 for elem in bilans_kalorie]):
         return 1
@@ -259,8 +274,6 @@ def check_offspring(offsprings_list_mutated):
         offspring_ok = check_offspring_singular(offs_copy)
 
         if offspring_ok:
-            print("index", i)
-            print('offspring', np.array(offsprings_list_mutated[i]))
             offsprings_checked.append(offsprings_list_mutated[i])
         else:
             continue
@@ -270,7 +283,10 @@ def check_offspring(offsprings_list_mutated):
 # Step 7. Replace old population of chromosomes with new one.
 
 def if_row_has_zero(row: List[int]) -> int:
-    return 1 if any(row) else 0
+    if any(row):
+        return 1
+    else:
+        return 0
 
 
 def evaluate_1(individual: List[List[int]]):
@@ -280,33 +296,98 @@ def evaluate_1(individual: List[List[int]]):
     return sum
 
 
-# [(osobnik, evaluate), (), ()]
+# Step 8. Evaluate the fitness of each chromosome in the new population.
 def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_population: List[List[List[int]]]):
     result_for_old = []
     for elem in old_population:
         pair = elem, evaluate_1(elem)
         result_for_old.append(pair)
-    result_for_old = sorted(result_for_old, key=lambda t: t[1], reverse=False)
 
     result_for_new = []
     for elem in new_population:
         pair = elem, evaluate_1(elem)
         result_for_new.append(pair)
 
-    for _ in range(0, len(new_population)):
-        tmp = result_for_old.pop()
-
+    nowa_lista = []
     for i in range(0, len(result_for_new)):
-        result_for_old.append(result_for_new[i])
+        nowa_lista.append(result_for_new[i])
+    for i in range(0, len(result_for_old)):
+        nowa_lista.append(result_for_old[i])
 
-    result_for_old = sorted(result_for_old, key=lambda t: t[1], reverse=False)
-    return result_for_old
+    nowa_lista = sorted(nowa_lista, key=lambda t: t[1], reverse=False)
+
+    return nowa_lista
 
 
+def pull_parents_form_parents_longer(old_population):
+    parents = []
+    for i in range(len(old_population)):
+        parents.append([])
+        for j in range(len(old_population[i])):
+            parents[i].append(old_population[i][j][1])
+    return parents
 
-
-
-
-# Step 8. Evaluate the fitness of each chromosome in the new population.
 
 # Step 9. Terminate if the number of generations meets some upper bound; otherwise go to Step3.
+
+def change_new_popul_to_other_format(new_population):
+    formatted = []
+
+    for elem in (new_population):
+        list = []
+        for j in range(len(elem[0])):
+            decision = if_row_has_zero(elem[0][j])
+            list.append([decision, elem[0][j], 0])
+        formatted.append(list)
+
+    return formatted
+
+
+def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, probability=0.1, liczba_zamian=None):
+    # osobniki poczatkowe
+    init_specimen = init_population(len_init_population, terminarz, lista_produktow)
+
+    i = 0
+    while i < upper_bound:
+        # osobniki poczatkowe plus wartosc f celu
+        init_specimen_f_celu = eval_init_population(init_specimen)
+
+        # zwraca połowę poczatkowych osobnikow przez losowanie
+        # prawdopodobienstwo wybrania osobnika do krzyzowania jest odwrotnie proporcjonalne do wartosci funkcji celu
+        # (minimalizujemy jej wartosc)
+        rull = rulette(init_specimen_f_celu, len_init_population)
+        copy_rull = copy.deepcopy(rull)
+        # print('rull')
+
+        # print(rull)
+
+        # łaczenie wybranych w losowaniu osobników w pary
+        pairs = return_pairs(rull)
+
+        # krzyżowanie rodziców - nowa populacja
+        offspring = crossover(pairs)
+
+        # mutowanie osobników z prawdopodobienstwem wystapienia mutacji = probability (wartosc domyslna  = 0.1)
+        # oraz liczba zamian przy niej wykonywanych = liczba_zamian (wartosc domysna ~= 30 zamian na tydzień)
+        offs_mut = mutation(offspring, prob_od_mut=probability, changes_no=liczba_zamian)
+
+        # sprawdzenie poprawności otrzymanych po krzyzowaniu i mutacji osobników (bilans kaloryczny oraz upper bound lodowki)
+        offspings_checked = check_offspring(offs_mut)
+
+        # dodanie do starych osobnikow, nowo powstalych
+        x = replace_old_pop_with_new_one(pull_parents_form_parents_longer(copy_rull), offspings_checked)
+
+        # print('x')
+        # print(x)
+
+        print('iteracja = ', i, 'f.celu = ', x[0][1])
+
+        # len(x) jest miedzy [len(rodzice), 2*len(rodzice)]
+        init_specimen = change_new_popul_to_other_format(x)
+
+        # print('init_specimen')
+        # print(init_specimen)
+
+        i += 1
+
+    return x

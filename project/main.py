@@ -130,8 +130,10 @@ def test_genetic_algo():
     # gen.print_solution2(offspings_checked, title = 'offspings_checked')
 
     # Nie wiadomo czy dziala rull [[1, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 0]
-    x = gen.replace_old_pop_with_new_one(rull, offspings_checked)
-    print(x)
+    x = gen.replace_old_pop_with_new_one(gen.pull_parents_form_parents_longer(rull), offspings_checked)
+    print(len(x))
+
+
 
 
 if __name__ == '__main__':
@@ -143,4 +145,20 @@ if __name__ == '__main__':
     # test_check_capacity()
     # test_check_current_solution_in_tabu_list()
     # test_tabu_solution()
-    test_genetic_algo()
+    # test_genetic_algo()
+
+    print('dla i = 1000')
+
+    solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
+    print(solution, '\n')
+
+    # print('dla i = 500')
+
+    # solution = gen.genetic_algo(500, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
+    # print(solution)
+
+
+    # lista_produktow = gen.lista_produktow
+    # terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
+
+    
