@@ -150,15 +150,8 @@ if __name__ == '__main__':
     print('dla i = 1000')
 
     solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
-    print(solution, '\n')
 
     # print('dla i = 500')
 
     # solution = gen.genetic_algo(500, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
     # print(solution)
-
-
-    # lista_produktow = gen.lista_produktow
-    # terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
-
-    
