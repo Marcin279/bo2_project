@@ -8,6 +8,7 @@ project/.idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+project/src/__pycache__/
 *.py[cod]
 *$py.class
 
