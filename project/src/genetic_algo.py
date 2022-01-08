@@ -197,6 +197,8 @@ def mutation(offsprings_list, prob_od_mut=0.1, changes_no=None):
 # b) mozemy go probowac poprawiac (jezeli brakuje kalorii do dodawac produkty) -> zeby nie bylo problemu to mozemy zwiekszyc ktores z ograniczen
 # z kotrego bysmy nie skorzystali rozwiazania trzeba bedzie dokladnie opisac w dokumenacji, bo to nie jest zbyt "standardowe" rozwiazanie
 
+
+#sprawdzenie poprawności jednego osobnika
 def check_offspring_singular(offspring):
     """
     jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
@@ -236,7 +238,7 @@ def check_offspring_singular(offspring):
         return 1
     return 0
 
-
+#sprawdzenie poprawności pojedynczego osobnika po krzyżowaniu i mutacji
 def check_offspring(offsprings_list_mutated):
     offsprings_checked = []
     for i in range(len(offsprings_list_mutated)):
@@ -250,14 +252,11 @@ def check_offspring(offsprings_list_mutated):
     return offsprings_checked
 
 
-# Step 7. Replace old population of chromosomes with new one.
-
 def if_row_has_zero(row: List[int]) -> int:
     if any(row):
         return 1  
     else:
         return 0
-
 
 def evaluate_1(individual: List[List[int]]):
     sum = 0
@@ -266,7 +265,7 @@ def evaluate_1(individual: List[List[int]]):
     return sum
 
 
-# Step 8. Evaluate the fitness of each chromosome in the new population.
+#sprawdzenie poprawności osobników po krzyżowaniu i mutacji
 def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_population: List[List[List[int]]]):
 
     result_for_old = []
@@ -289,6 +288,7 @@ def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_popu
 
     return nowa_lista
 
+# podmiana formatu rodziców
 def pull_parents_form_parents_longer(old_population):
     parents = []
     for i in range(len(old_population)):
@@ -296,9 +296,6 @@ def pull_parents_form_parents_longer(old_population):
         for j in range(len(old_population[i])):
             parents[i].append(old_population[i][j][1])
     return parents
-
-
-# Step 9. Terminate if the number of generations meets some upper bound; otherwise go to Step3.
 
 def change_new_popul_to_other_format(new_population):
     formatted = []
@@ -324,9 +321,7 @@ def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, p
         #osobniki poczatkowe plus wartosc f celu
         init_specimen_f_celu = eval_init_population(init_specimen)
 
-        # zwraca połowę poczatkowych osobnikow przez losowanie
-        # prawdopodobienstwo wybrania osobnika do krzyzowania jest odwrotnie proporcjonalne do wartosci funkcji celu
-        # (minimalizujemy jej wartosc)
+        # zwraca polowe dlugosci pierwotnej listy osobników najlepszych osobników
         parents = choose_parents(init_specimen_f_celu, len_init_population)
         copy_parents = copy.deepcopy(parents)
   
