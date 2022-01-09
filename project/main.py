@@ -48,7 +48,7 @@ def test_generate_initial_solution():
     terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
     lista_produktow = ds.generuj_liste_produktow()
     # print(np.array(lista_produktow))
-    lod1 = tsol.Lodowka(terminarz, lista_produktow)
+    lod1 = tsol.lodowka(terminarz, lista_produktow)
 
     lod1.print_solution(lod1.generete_initial_solution())
 
@@ -57,7 +57,7 @@ def test_step1():
     terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
     lista_produktow = ds.generuj_liste_produktow()
     # print(np.array(lista_produktow))
-    lod1 = tsol.Lodowka(terminarz, lista_produktow)
+    lod1 = tsol.lodowka(terminarz, lista_produktow)
     sol = lod1.generete_initial_solution()
     # lod1.print_solution(sol)
 
@@ -73,7 +73,7 @@ def test_check_capacity():
     terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
     lista_produktow = ds.generuj_liste_produktow()
     # print(np.array(lista_produktow))
-    lod1 = tsol.Lodowka(terminarz, lista_produktow)
+    lod1 = tsol.lodowka(terminarz, lista_produktow)
     sol = lod1.generete_initial_solution()
     sol = lod1.zwroc_liste_produktow(sol)
     sol_step = lod1.step1(sol)
@@ -84,7 +84,7 @@ def test_check_capacity():
 def test_check_current_solution_in_tabu_list():
     terminarz1 = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
     lista_produktow1 = ds.generuj_liste_produktow()
-    lod1 = tsol.Lodowka(terminarz1, lista_produktow1)
+    lod1 = tsol.lodowka(terminarz1, lista_produktow1)
     sol1 = lod1.generete_initial_solution()
     sol1 = lod1.zwroc_liste_produktow(sol1)
     sol_step1 = lod1.step1(sol1)
@@ -108,7 +108,7 @@ def test_tabu_solution():
 
 
 def test_genetic_algo():
-    lista_produktow = gen.lista_produktow
+    lista_produktow = Data.lista_produktow
 
     terminarz = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
 
@@ -154,6 +154,7 @@ def test_genetic_algo():
 
 
 def genetic_algo_print(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw, prawdopodobienstwo_wyst_mutacji):
+    print("======= Algorytm genetyczny =======\n\n")
     print('kryterium stopu, iteracje = 1000')
     # solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
     solution = gen.genetic_algo(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw,
@@ -162,6 +163,7 @@ def genetic_algo_print(iteracje, lista_produktow, calendar, ilosc_osobnikow_pier
 
 def tabu_search_print(data: Data, params: ParamsToTabuSearch):
     it = params.iteration
+    print("======= TABU SEARCH =======\n\n")
     print("Dla iteracji: ", it)
     terminarz = data.kalendarz
     lista_produktow = data.lista_produktow
@@ -178,7 +180,10 @@ if __name__ == '__main__':
 
     params_to_tabu_search = ParamsToTabuSearch
 
-    wybierz_metode_genetic_algo: bool = False
+    # Tu wybierz którą metodę chcesz liczyć
+    # True = algorytm genetyczny
+    # False = Tabu Search
+    wybierz_metode_genetic_algo: bool = True
 
     if wybierz_metode_genetic_algo is True:
         genetic_algo_print(iteracje=params_to_genetic_algo.iteration, lista_produktow=data.lista_produktow,
@@ -187,11 +192,4 @@ if __name__ == '__main__':
                            prawdopodobienstwo_wyst_mutacji=params_to_genetic_algo.prawdopobienstwo_mutacji)
     else:
         tabu_search_print(data, params_to_tabu_search)
-    # print('dla i = 1000')
-    #
-    # solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
 
-    # print('dla i = 500')
-
-    # solution = gen.genetic_algo(500, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
-    # print(solution)
