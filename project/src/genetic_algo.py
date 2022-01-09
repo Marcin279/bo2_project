@@ -5,17 +5,6 @@ from typing import List, Union, Dict, Tuple, Set, Any
 import random
 from src.tabu_solution import lodowka
 
-lista_produktow = np.array([
-    [5.600e-01, 1.335e+03],
-    [2.500e-01, 1.274e+03],
-    [3.800e-01, 6.570e+02],
-    [7.000e-02, 1.258e+03],
-    [1.100e-01, 8.410e+02],
-    [5.500e-01, 1.146e+03],
-    [3.200e-01, 9.850e+02],
-    [2.000e-02, 8.490e+02],
-    [1.400e-01, 1.235e+03],
-    [1.000e-01, 1.343e+03]])
 
 najlepsze_rozwiazanie = 100
 
@@ -203,11 +192,9 @@ def mutation(offsprings_list, prob_od_mut=0.1, changes_no=None):
 # z kotrego bysmy nie skorzystali rozwiazania trzeba bedzie dokladnie opisac w dokumenacji, bo to nie jest zbyt "standardowe" rozwiazanie
 
 
+# sprawdzenie poprawności jednego osobnika
 
-
-#sprawdzenie poprawności jednego osobnika
-
-def check_offspring_singular(offspring):
+def check_offspring_singular(offspring, lista_produktow):
     """
     jako parametr przyjmuje macierz w której wiersze reprezentują kolejne dni, natomiast
     kolumny listę produktów
@@ -249,11 +236,11 @@ def check_offspring_singular(offspring):
 
 # sprawdzenie poprawności pojedynczego osobnika po krzyżowaniu i mutacji
 
-def check_offspring(offsprings_list_mutated):
+def check_offspring(offsprings_list_mutated, lista_produktow):
     offsprings_checked = []
     for i in range(len(offsprings_list_mutated)):
         offs_copy = copy.deepcopy(offsprings_list_mutated[i])
-        offspring_ok = check_offspring_singular(offs_copy)
+        offspring_ok = check_offspring_singular(offs_copy, lista_produktow)
 
         if offspring_ok:
             offsprings_checked.append(offsprings_list_mutated[i])
@@ -268,6 +255,7 @@ def if_row_has_zero(row: List[int]) -> int:
     else:
         return 0
 
+
 def evaluate_1(individual: List[List[int]]):
     sum = 0
     for elem in individual:
@@ -275,8 +263,7 @@ def evaluate_1(individual: List[List[int]]):
     return sum
 
 
-
-#sprawdzenie poprawności osobników po krzyżowaniu i mutacji
+# sprawdzenie poprawności osobników po krzyżowaniu i mutacji
 def replace_old_pop_with_new_one(old_population: List[List[List[int]]], new_population: List[List[List[int]]]):
     result_for_old = []
     for elem in old_population:
@@ -347,7 +334,7 @@ def genetic_algo(upper_bound, lista_produktow, terminarz, len_init_population, p
         offs_mut = mutation(offspring, prob_od_mut=probability, changes_no=liczba_zamian)
 
         # sprawdzenie poprawności otrzymanych po krzyzowaniu i mutacji osobników (bilans kaloryczny oraz upper bound lodowki)
-        offspings_checked = check_offspring(offs_mut)
+        offspings_checked = check_offspring(offs_mut, lista_produktow)
 
         # dodanie do starych osobnikow, nowo powstalych
         x = replace_old_pop_with_new_one(pull_parents_form_parents_longer(copy_parents), offspings_checked)

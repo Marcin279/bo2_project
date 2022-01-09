@@ -16,6 +16,8 @@ class lodowka():
     zapotrz_kal = 3000  # Zapotrzebowanie kaloryczne w danym dniu - w każdym dniu tyle samo
     kryterium_stopu = 1000  # maksymalna ilosc iteracji
 
+    current_iter = 0
+
     def __init__(self, terminarz, lista_produktow):
         """
         parameters:
@@ -31,6 +33,7 @@ class lodowka():
         self.initial_solution = self.generete_initial_solution()
         self.tabu_list = []  # Lista tabu
         self.best_solution = self.initial_solution
+        self.best_sol = self.zwroc_najlepsze_rozwiazanie(self.initial_solution)
 
     def generete_initial_solution(self) -> np.ndarray:
         """
@@ -134,7 +137,7 @@ class lodowka():
         Generowanie sąsiednich rozwiązan
         """
 
-        ile_zamian = int(macierz_pom_produktow.shape[0]/7*30)
+        ile_zamian = int(macierz_pom_produktow.shape[0] / 7 * 30)
         for i in range(ile_zamian):
             kierunek_przesuniecia = [1, 2, 3, 4]  # 1 - gora, 2 - dol, 3-lewo, 4-
             x_idx = np.random.randint(0, macierz_pom_produktow.shape[1])
@@ -283,11 +286,11 @@ class lodowka():
         it = 0
         lista_produktow_poczatkowa = self.zwroc_liste_produktow()
         self.tabu_list.append(lista_produktow_poczatkowa)
-        print("Poczatkowe najlepsze rozwiazanie",
-              self.zwroc_najlepsze_rozwiazanie(self.postac_do_rozwiazania(lista_produktow_poczatkowa)))
-        self.print_solution(self.postac_do_rozwiazania(lista_produktow_poczatkowa))
+        # print("Poczatkowe najlepsze rozwiazanie",
+        #       self.zwroc_najlepsze_rozwiazanie(self.postac_do_rozwiazania(lista_produktow_poczatkowa)))
+        # self.print_solution(self.postac_do_rozwiazania(lista_produktow_poczatkowa))
         poprzednie_rozwiazanie = self.zwroc_liste_produktow()
-
+        print("Początkowe rozwiazanie: ", self.best_sol)
         while it < self.kryterium_stopu:
             it += 1
             copy_for_step = copy.deepcopy(poprzednie_rozwiazanie)
@@ -300,7 +303,7 @@ class lodowka():
                 macierz_pom_produktow2=for_check)
 
             if self.check_current_sol_in_tabu_list(self.tabu_list, for_check):
-                print("rozw w liscie tabu \tit: ", it)
+                # print("rozw w liscie tabu \tit: ", it)
                 continue
 
             elif any([v > self.maksymalna_poj_lodowki for v in sasiednie_rozwiazanie_lodowka_ponad_stan]) or any(
@@ -319,9 +322,11 @@ class lodowka():
 
                 if self.zwroc_najlepsze_rozwiazanie(self.best_solution) > best_current_sol:
                     print(f"Najlepsze rozwiazanie\t: {best_current_sol} , it: {it}")
-                    self.print_solution(rozwiazanie)
+                    # self.print_solution(rozwiazanie)
+                    self.best_sol = best_current_sol
                     self.best_solution = rozwiazanie
-                    print("Kolejne rozwiazania: \t", best_current_sol)
+                    # print("Kolejne rozwiazania: \t", best_current_sol)
                 else:
-                    print("NIE najlepsze rozwiazanie\t", best_current_sol)
-                    self.print_solution(rozwiazanie)
+                    # print("NIE najlepsze rozwiazanie\t", best_current_sol)
+                    # self.print_solution(rozwiazanie)
+                    continue
