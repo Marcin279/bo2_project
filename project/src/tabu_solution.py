@@ -281,7 +281,7 @@ class lodowka():
     def print_solution(self, solution):
         S = ''
         for elem in solution:
-            S += f"d: {elem[0]}  lst: {elem[1]}  b: {elem[2]}\n"
+            S += f"d: {elem[0]}  lst: {elem[1]}\n"
         print(S)
 
     def tabu_solution(self):
