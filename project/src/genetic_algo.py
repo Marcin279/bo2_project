@@ -21,7 +21,7 @@ lista_produktow = np.array([
 ograniczenia = ds.Ograniczenia()
 
 
-def print_solution2(data: List[List[int]], title: str = 'XD'):
+def print_solution2(data: List[List[int]], title: str = ''):
     print(title, sep='\n')
     for i in range(len(data)):
         tmp = np.array(data[i])
