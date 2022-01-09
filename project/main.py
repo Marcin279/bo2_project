@@ -4,13 +4,25 @@ import src.genetic_algo as gen
 
 import numpy as np
 
+# lista_produktow = np.array([
+#     [5.600e-01, 1.335e+03],
+#     [2.500e-01, 1.274e+03],
+#     [3.800e-01, 6.570e+02],
+#     [7.000e-02, 1.258e+03],
+#     [1.100e-01, 8.410e+02],
+#     [5.500e-01, 1.146e+03],
+#     [3.200e-01, 9.850e+02],
+#     [2.000e-02, 8.490e+02],
+#     [1.400e-01, 1.235e+03],
+#     [1.000e-01, 1.343e+03]])
+
 lista_produktow = np.array([
     [5.600e-01, 1.335e+03],
     [2.500e-01, 1.274e+03],
-    [3.800e-01, 6.570e+02],
-    [7.000e-02, 1.258e+03],
+    [5.800e-01, 6.570e+02],
+    [4.000e-02, 1.258e+03],
     [1.100e-01, 8.410e+02],
-    [5.500e-01, 1.146e+03],
+    [3.500e-01, 1.146e+03],
     [3.200e-01, 9.850e+02],
     [2.000e-02, 8.490e+02],
     [1.400e-01, 1.235e+03],
@@ -31,7 +43,9 @@ class ParamsToGeneticAlgo:
 
 
 class ParamsToTabuSearch:
-    iteration = 100
+    ograniczenia = ds.Ograniczenia
+    ograniczenia.zapotrz_kal = 3000
+    ograniczenia.kryterium_stopu = 1000
 
 
 # testy poszczegolnych funkcji
@@ -156,14 +170,13 @@ def test_genetic_algo():
 def genetic_algo_print(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw, prawdopodobienstwo_wyst_mutacji):
     print("======= Algorytm genetyczny =======\n\n")
     print('kryterium stopu, iteracje = 1000')
-    # solution = gen.genetic_algo(1000, gen.lista_produktow, ds.return_calendar(3, 1, 2022, 15, 1, 2022), 20, 0.9)
     solution = gen.genetic_algo(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw,
                                 prawdopodobienstwo_wyst_mutacji)
 
 
 def tabu_search_print(data: Data, params: ParamsToTabuSearch):
-    it = params.iteration
     print("======= TABU SEARCH =======\n\n")
+    it = params.ograniczenia.kryterium_stopu
     print("Dla iteracji: ", it)
     terminarz = data.kalendarz
     lista_produktow = data.lista_produktow
@@ -183,7 +196,7 @@ if __name__ == '__main__':
     # Tu wybierz którą metodę chcesz liczyć
     # True = algorytm genetyczny
     # False = Tabu Search
-    wybierz_metode_genetic_algo: bool = True
+    wybierz_metode_genetic_algo: bool = False
 
     if wybierz_metode_genetic_algo is True:
         genetic_algo_print(iteracje=params_to_genetic_algo.iteration, lista_produktow=data.lista_produktow,
@@ -192,4 +205,3 @@ if __name__ == '__main__':
                            prawdopodobienstwo_wyst_mutacji=params_to_genetic_algo.prawdopobienstwo_mutacji)
     else:
         tabu_search_print(data, params_to_tabu_search)
-

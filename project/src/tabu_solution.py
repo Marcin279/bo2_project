@@ -7,14 +7,16 @@ import random
 
 
 class lodowka():
-    poczatkowy_stan_lodowki = 0  # poczatkowy stan lodowki
+    ograniczenia = ds.Ograniczenia
 
-    maksymalna_poj_lodowki = 20  # maksymalna ilosc produktow w lodowce
-    maks_liczba = 1  # maksymalna ilosc tego samego produktu
-    N = 365  # tbd
-    max_poj_plecaka = 7  # kg maksymalna pojemnosc_plecaka
-    zapotrz_kal = 3000  # Zapotrzebowanie kaloryczne w danym dniu - w każdym dniu tyle samo
-    kryterium_stopu = 1000  # maksymalna ilosc iteracji
+    poczatkowy_stan_lodowki = ograniczenia.poczatkowy_stan_lodowki  # poczatkowy stan lodowki
+
+    maksymalna_poj_lodowki = ograniczenia.maksymalna_poj_lodowki  # maksymalna ilosc produktow w lodowce
+    maks_liczba = ograniczenia.maks_liczba  # maksymalna ilosc tego samego produktu
+    N = ograniczenia.N  # tbd
+    max_poj_plecaka = ograniczenia.max_poj_plecaka  # kg maksymalna pojemnosc_plecaka
+    zapotrz_kal = ograniczenia.zapotrz_kal  # Zapotrzebowanie kaloryczne w danym dniu - w każdym dniu tyle samo
+    kryterium_stopu = ograniczenia.kryterium_stopu  # maksymalna ilosc iteracji
 
     current_iter = 0
 
@@ -303,19 +305,14 @@ class lodowka():
                 macierz_pom_produktow2=for_check)
 
             if self.check_current_sol_in_tabu_list(self.tabu_list, for_check):
-                # print("rozw w liscie tabu \tit: ", it)
                 continue
 
             elif any([v > self.maksymalna_poj_lodowki for v in sasiednie_rozwiazanie_lodowka_ponad_stan]) or any(
                     [v < 0 for v in kalorie_sasiednie_rozwiazanie]):
-                # if any([v < 0 for v in kalorie_sasiednie_rozwiazanie]) :
-                #   print("wykrylo ze jest nie ok kcal")
-                # else:
-                #   print("wykrylo ze jest nie ok else")
+
                 self.tabu_list.append(for_check)
 
             else:
-                # print("rowz NIE w liscie tabu \tit: ", it)
                 rozwiazanie = self.postac_do_rozwiazania(sasiednie_rozwiazanie)
                 best_current_sol = self.zwroc_najlepsze_rozwiazanie(rozwiazanie)
                 poprzednie_rozwiazanie = self.zwroc_liste_produktow(rozwiazanie)
@@ -325,8 +322,5 @@ class lodowka():
                     # self.print_solution(rozwiazanie)
                     self.best_sol = best_current_sol
                     self.best_solution = rozwiazanie
-                    # print("Kolejne rozwiazania: \t", best_current_sol)
                 else:
-                    # print("NIE najlepsze rozwiazanie\t", best_current_sol)
-                    # self.print_solution(rozwiazanie)
                     continue
