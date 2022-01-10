@@ -44,4 +44,4 @@ Parametry ustalamy w klasach **ParamsToGeneticAlgo** dla algorytmu genetycznego:
 
 ## Instalacja potrzebnych bibliotek
 
-pip install -r requirements.txt
+'pip install -r requirements.txt'
