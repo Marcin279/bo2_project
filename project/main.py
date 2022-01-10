@@ -49,7 +49,7 @@ class Data:
 
 class ParamsToGeneticAlgo:
     iteration = 1000
-    prawdopobienstwo_mutacji = 0.9
+    prawdopobienstwo_mutacji = 0.1
     ilosc_osobnikow_do_reprodukcji = 20
 
 
@@ -65,7 +65,8 @@ def genetic_algo_print(iteracje, lista_produktow, calendar, ilosc_osobnikow_pier
     print(f'kryterium stopu, iteracje = {iteracje}')
     solution = gen.genetic_algo(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw,
                                 prawdopodobienstwo_wyst_mutacji)
-
+    print('Najlepsze rozwiązanie:   ', solution[0][1])
+    gen.print_solution_final(solution[0])
 
 def tabu_search_print(data: Data, params: ParamsToTabuSearch):
     print("======= TABU SEARCH =======\n\n")
@@ -90,7 +91,7 @@ if __name__ == '__main__':
     # Tu wybierz którą metodę chcesz liczyć
     # True = algorytm genetyczny
     # False = Tabu Search
-    wybierz_metode_genetic_algo: bool = False
+    wybierz_metode_genetic_algo: bool = True
 
     if wybierz_metode_genetic_algo is True:
         genetic_algo_print(iteracje=params_to_genetic_algo.iteration, lista_produktow=data.lista_produktow,

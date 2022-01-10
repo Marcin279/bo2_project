@@ -10,6 +10,12 @@ najlepsze_rozwiazanie = 100
 
 ograniczenia = ds.Ograniczenia()
 
+def print_solution_final(solution):
+    S = ''
+    for i in range(len(solution[0])):
+        S += f"d: {if_row_has_zero(solution[0][i])}  lst: {solution[0][i]}\n"
+    print(S)
+
 
 def print_solution2(data: List[List[int]], title: str = '...'):
     print(title, sep='\n')
