@@ -4,31 +4,42 @@ import src.genetic_algo as gen
 
 import numpy as np
 
-# lista_produktow = np.array([
-#     [5.600e-01, 1.335e+03],
-#     [2.500e-01, 1.274e+03],
-#     [3.800e-01, 6.570e+02],
-#     [7.000e-02, 1.258e+03],
-#     [1.100e-01, 8.410e+02],
-#     [5.500e-01, 1.146e+03],
-#     [3.200e-01, 9.850e+02],
-#     [2.000e-02, 8.490e+02],
-#     [1.400e-01, 1.235e+03],
-#     [1.000e-01, 1.343e+03]])
+lista_produktow1 = np.array([[5.600e-01, 1.335e+03],
+                            [2.500e-01, 1.274e+03],
+                            [3.800e-01, 6.570e+02],
+                            [7.000e-02, 1.258e+03],
+                            [1.100e-01, 8.410e+02],
+                            [5.500e-01, 1.146e+03],
+                            [3.200e-01, 9.850e+02],
+                            [2.000e-02, 8.490e+02],
+                            [1.400e-01, 1.235e+03],
+                            [1.000e-01, 1.343e+03]])
 
-lista_produktow = np.array([
-    [5.600e-01, 1.335e+03],
-    [2.500e-01, 1.274e+03],
-    [5.800e-01, 6.570e+02],
-    [4.000e-02, 1.258e+03],
-    [1.100e-01, 8.410e+02],
-    [3.500e-01, 1.146e+03],
-    [3.200e-01, 9.850e+02],
-    [2.000e-02, 8.490e+02],
-    [1.400e-01, 1.235e+03],
-    [1.000e-01, 1.343e+03]])
+lista_produktow2 = np.array([[6.000e-02, 9.300e+02],
+                             [4.000e-01, 8.160e+02],
+                             [3.000e-01, 1.242e+03],
+                             [5.000e-01, 1.498e+03],
+                             [6.400e-01, 8.930e+02],
+                             [2.800e-01, 1.134e+03],
+                             [1.700e-01, 6.590e+02],
+                             [6.100e-01, 1.315e+03],
+                             [1.800e-01, 3.330e+02],
+                             [2.100e-01, 8.580e+02]])
 
-calendar = ds.return_calendar(3, 1, 2022, 15, 1, 2022)
+lista_produktow3 = np.array([[4.900e-01, 6.580e+02],
+                             [4.400e-01, 8.960e+02],
+                             [1.000e-01, 8.500e+02],
+                             [2.200e-01, 1.145e+03],
+                             [2.700e-01, 5.880e+02],
+                             [1.700e-01, 8.650e+02],
+                             [6.000e-02, 7.740e+02],
+                             [1.500e-01, 9.500e+02],
+                             [4.500e-01, 6.980e+02],
+                             [2.200e-01, 9.710e+02]])
+
+lista_produktow = lista_produktow3
+
+calendar = ds.return_calendar(3, 1, 2022, 25, 1, 2022)
 
 
 class Data:
@@ -44,7 +55,7 @@ class ParamsToGeneticAlgo:
 
 class ParamsToTabuSearch:
     ograniczenia = ds.Ograniczenia
-    ograniczenia.zapotrz_kal = 3000
+    # ograniczenia.zapotrz_kal = 3000
     ograniczenia.kryterium_stopu = 1000
 
 
@@ -169,13 +180,15 @@ def test_genetic_algo():
 
 def genetic_algo_print(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw, prawdopodobienstwo_wyst_mutacji):
     print("======= Algorytm genetyczny =======\n\n")
-    print('kryterium stopu, iteracje = 1000')
+    print(lista_produktow)
+    print(f'kryterium stopu, iteracje = {iteracje}')
     solution = gen.genetic_algo(iteracje, lista_produktow, calendar, ilosc_osobnikow_pierw,
                                 prawdopodobienstwo_wyst_mutacji)
 
 
 def tabu_search_print(data: Data, params: ParamsToTabuSearch):
     print("======= TABU SEARCH =======\n\n")
+    print(data.lista_produktow)
     it = params.ograniczenia.kryterium_stopu
     print("Dla iteracji: ", it)
     terminarz = data.kalendarz

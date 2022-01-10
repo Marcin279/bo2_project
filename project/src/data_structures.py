@@ -4,42 +4,6 @@ import pandas as pd
 from typing import List
 
 
-# class Calendar:
-#
-#     def __init__(self, first_day, first_month, first_year, last_day, last_month, last_year):
-#         self.first_day = first_day
-#         self.first_month = first_month
-#         self.first_year = first_year
-#         self.last_day = last_day
-#         self.last_month = last_month
-#         self.last_year = last_year
-#
-#     def return_calendar(self):
-#
-#         vector_days = []
-#
-#         d0 = datetime.date(first_year, first_month, first_day)
-#         d1 = datetime.date(last_year, last_month, last_day)
-#
-#         start_date = d0
-#         end_date = d1
-#         delta = datetime.timedelta(days=1)
-#
-#         while start_date <= end_date:
-#             weight = lodowka.max_poj_plecaka
-#             # if start_date.weekday() == 6:
-#             #   weight = 0
-#
-#             if start_date in lista_swiat:
-#                 weight = 0  # poj plecaka
-#
-#             vector_days.append((start_date, start_date.weekday(), weight))
-#
-#             start_date += delta
-#
-#         return vector_days
-
-
 class Ograniczenia:
     poczatkowy_stan_lodowki = 0  # poczatkowy stan lodowki
 
@@ -67,19 +31,7 @@ class Solution:
         return len(self.lista_produktow)
 
 
-# lista_swiat = [datetime.date(2022, 1, 1),
-#                datetime.date(2022, 1, 6),
-#                datetime.date(2022, 4, 17),
-#                datetime.date(2022, 4, 18),
-#                datetime.date(2022, 5, 1),
-#                datetime.date(2022, 5, 3),
-#                datetime.date(2022, 6, 5),
-#                datetime.date(2022, 6, 16),
-#                datetime.date(2022, 7, 15),
-#                datetime.date(2022, 11, 1),
-#                datetime.date(2022, 11, 11),
-#                datetime.date(2022, 12, 25),
-#                datetime.date(2022, 12, 26)]
+
 lista_swiat = []
 
 
@@ -149,5 +101,56 @@ def generuj_liste_produktow():
 
     df = pd.DataFrame(tabela_merge).transpose()
     df.rename(columns={0: "waga", 1: "kaloryczność", 2: "przydatnosc"})
-
     return df
+
+# ======= GARBAGE =======
+
+# class Calendar:
+#
+#     def __init__(self, first_day, first_month, first_year, last_day, last_month, last_year):
+#         self.first_day = first_day
+#         self.first_month = first_month
+#         self.first_year = first_year
+#         self.last_day = last_day
+#         self.last_month = last_month
+#         self.last_year = last_year
+#
+#     def return_calendar(self):
+#
+#         vector_days = []
+#
+#         d0 = datetime.date(first_year, first_month, first_day)
+#         d1 = datetime.date(last_year, last_month, last_day)
+#
+#         start_date = d0
+#         end_date = d1
+#         delta = datetime.timedelta(days=1)
+#
+#         while start_date <= end_date:
+#             weight = lodowka.max_poj_plecaka
+#             # if start_date.weekday() == 6:
+#             #   weight = 0
+#
+#             if start_date in lista_swiat:
+#                 weight = 0  # poj plecaka
+#
+#             vector_days.append((start_date, start_date.weekday(), weight))
+#
+#             start_date += delta
+#
+#         return vector_days
+
+
+# lista_swiat = [datetime.date(2022, 1, 1),
+#                datetime.date(2022, 1, 6),
+#                datetime.date(2022, 4, 17),
+#                datetime.date(2022, 4, 18),
+#                datetime.date(2022, 5, 1),
+#                datetime.date(2022, 5, 3),
+#                datetime.date(2022, 6, 5),
+#                datetime.date(2022, 6, 16),
+#                datetime.date(2022, 7, 15),
+#                datetime.date(2022, 11, 1),
+#                datetime.date(2022, 11, 11),
+#                datetime.date(2022, 12, 25),
+#                datetime.date(2022, 12, 26)]
