@@ -44,7 +44,7 @@ class Data:
 
 
 class ParamsToGeneticAlgo:
-    iteration = 1000
+    iteration = 100
     prawdopobienstwo_mutacji = 0.1
     ilosc_osobnikow_do_reprodukcji = 20
 
@@ -63,6 +63,7 @@ def genetic_algo_print(iteracje, lista_produktow, calendar, ilosc_osobnikow_pier
                                 prawdopodobienstwo_wyst_mutacji)
     print('Najlepsze rozwiązanie:   ', solution[0][1])
     gen.print_solution_final(solution[0])
+
 
 def tabu_search_print(data: Data, params: ParamsToTabuSearch):
     print("======= TABU SEARCH =======\n\n")
