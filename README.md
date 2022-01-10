@@ -41,3 +41,7 @@ Parametry ustalamy w klasach **ParamsToGeneticAlgo** dla algorytmu genetycznego:
  - False = wybieramy Tabu Search
 
 ![Uruchamianie aplikacji](screenshots/screen3.png)
+
+## Instalacja potrzebnych bibliotek
+
+pip install -r requirements.txt
