@@ -1,6 +1,7 @@
 import src.data_structures as ds
 import src.tabu_solution as tsol
 import src.genetic_algo as gen
+import numpy as np
 
 
 # testy poszczegolnych funkcji

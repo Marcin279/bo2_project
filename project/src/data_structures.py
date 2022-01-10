@@ -31,7 +31,6 @@ class Solution:
         return len(self.lista_produktow)
 
 
-
 lista_swiat = []
 
 
