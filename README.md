@@ -17,7 +17,8 @@ aby końcowo otrzymać rozwiązanie optymalne według wybranych kryteriów i za�
 
 Dane wejściowe wpisujemy w strukturze Data:
  - do parametru lista produktów przesyłamy listę w postacji np.ndarray
- - kalendarz ustawiamy w postaci pierwszy dzień: DD/MM/RRRR, ostatni dzień: DD/MM/RRRR
+ - kalendarz ustawiamy w postaci pierwszy dzień: DD/MM/RRRR, ostatni dzień: DD/MM/RRRR </br>
+
 ![Dane](screenshots/screen1.png)
 
 ## Parametry
@@ -29,7 +30,8 @@ Parametry ustalamy w klasach **ParamsToGeneticAlgo** dla algorytmu genetycznego:
  
  oraz **ParamsToTabuSearch** dla algorytmu Tabu Search:
  - ilość iteracji, kryterium stopu
-  ![Parametry](screenshots/screen2.png)
+ 
+ ![Parametry](screenshots/screen2.png)
   
  ## Uruchamianie aplikacji
  Aby uruchomic aplikacje trzeba wczytać katalog **project** do IDE
@@ -37,3 +39,5 @@ Parametry ustalamy w klasach **ParamsToGeneticAlgo** dla algorytmu genetycznego:
  Ustawiając flagę **wybierz_metode_genetic_algo** na:
  - True = wybieramy algorytm genetyczny
  - False = wybieramy Tabu Search
+
+![Uruchamianie aplikacji](screenshots/screen3.png)
