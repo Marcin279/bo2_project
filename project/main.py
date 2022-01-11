@@ -39,13 +39,13 @@ lista_produktow3 = np.array([[4.900e-01, 6.580e+02],
 
 
 class Data:
-    lista_produktow = lista_produktow3
-    kalendarz = ds.return_calendar(3, 1, 2022, 25, 1, 2022)
+    lista_produktow = lista_produktow2
+    kalendarz = ds.return_calendar(3, 1, 2022, 31, 1, 2022)
 
 
 class ParamsToGeneticAlgo:
-    iteration = 100
-    prawdopobienstwo_mutacji = 0.1
+    iteration = 1000
+    prawdopobienstwo_mutacji = 0.9
     ilosc_osobnikow_do_reprodukcji = 20
 
 
@@ -85,10 +85,7 @@ if __name__ == '__main__':
 
     params_to_tabu_search = ParamsToTabuSearch
 
-    # Tu wybierz którą metodę chcesz liczyć
-    # True = algorytm genetyczny
-    # False = Tabu Search
-    wybierz_metode_genetic_algo: bool = True
+    wybierz_metode_genetic_algo: bool = False
 
     if wybierz_metode_genetic_algo is True:
         genetic_algo_print(iteracje=params_to_genetic_algo.iteration, lista_produktow=data.lista_produktow,
